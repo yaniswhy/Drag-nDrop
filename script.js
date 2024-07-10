@@ -23,7 +23,6 @@ printScheduleBtn.addEventListener('click', () => {
     window.print();
 });
 
-
 let currentTaskId = null;
 
 const days = document.querySelectorAll('.day');
@@ -51,7 +50,7 @@ function initializeDragAndDrop() {
 
 function dragStart(e) {
     e.dataTransfer.setData('text/plain', e.target.id);
-    e.dataTransfer.effectAllowed = 'move'; // Specify the operation allowed (move)
+    e.dataTransfer.effectAllowed = 'move';
     setTimeout(() => {
         e.target.classList.add('hide');
     }, 0);
@@ -79,22 +78,21 @@ function drop(e) {
     e.target.classList.remove('hovered');
     const id = e.dataTransfer.getData('text/plain');
     const draggable = document.getElementById(id);
-    
-    // If the drop target is the same as the current parent, return
+
     if (draggable.parentElement === e.target) {
         return;
     }
 
-    // If the task is dragged from the sidebar, clone it
     if (draggable.parentElement === tasksContainer) {
         const clone = draggable.cloneNode(true);
         clone.id = `task-${new Date().getTime()}`;
         initializeTask(clone);
         e.target.appendChild(clone);
+        saveTaskToFirestore(clone);
     } else {
-        // Remove the task from its current parent
         draggable.parentElement.removeChild(draggable);
         e.target.appendChild(draggable);
+        updateTaskPositionInFirestore(draggable);
     }
 }
 
@@ -144,6 +142,7 @@ function addTask() {
     taskColorInput.value = '#456C86';
 
     initializeDragAndDrop();
+    saveTaskToFirestore(newTask);
 }
 
 function editTask() {
@@ -159,10 +158,12 @@ function editTask() {
 
     initializeTask(task);
     closeEditModal();
+    updateTaskInFirestore(task);
 }
 
 function deleteTask(e) {
     const task = e.target.parentElement;
+    deleteTaskFromFirestore(task.id);
     task.remove();
 }
 
@@ -193,3 +194,84 @@ toggleSidebarBtn.addEventListener('click', () => {
 });
 
 initializeDragAndDrop();
+
+function saveTaskToFirestore(task) {
+    const taskData = {
+        id: task.id,
+        name: task.childNodes[0].nodeValue.trim(),
+        place: task.querySelector('.place').textContent,
+        time: task.querySelector('.time').textContent,
+        color: task.style.backgroundColor,
+        parent: task.parentElement.classList.contains('day') ? task.parentElement.id : 'tasksContainer'
+    };
+    db.collection('tasks').doc(task.id).set(taskData)
+        .then(() => {
+            console.log('Task saved to Firestore');
+        })
+        .catch(error => {
+            console.error('Error saving task to Firestore: ', error);
+        });
+}
+
+function updateTaskInFirestore(task) {
+    const taskData = {
+        id: task.id,
+        name: task.childNodes[0].nodeValue.trim(),
+        place: task.querySelector('.place').textContent,
+        time: task.querySelector('.time').textContent,
+        color: task.style.backgroundColor,
+        parent: task.parentElement.classList.contains('day') ? task.parentElement.id : 'tasksContainer'
+    };
+    db.collection('tasks').doc(task.id).update(taskData)
+        .then(() => {
+            console.log('Task updated in Firestore');
+        })
+        .catch(error => {
+            console.error('Error updating task in Firestore: ', error);
+        });
+}
+
+function updateTaskPositionInFirestore(task) {
+    const parent = task.parentElement.classList.contains('day') ? task.parentElement.id : 'tasksContainer';
+    db.collection('tasks').doc(task.id).update({ parent })
+        .then(() => {
+            console.log('Task position updated in Firestore');
+        })
+        .catch(error => {
+            console.error('Error updating task position in Firestore: ', error);
+        });
+}
+
+function deleteTaskFromFirestore(taskId) {
+    db.collection('tasks').doc(taskId).delete()
+        .then(() => {
+            console.log('Task deleted from Firestore');
+        })
+        .catch(error => {
+            console.error('Error deleting task from Firestore: ', error);
+        });
+}
+
+function loadTasksFromFirestore() {
+    db.collection('tasks').get()
+        .then(querySnapshot => {
+            querySnapshot.forEach(doc => {
+                const taskData = doc.data();
+                const task = document.createElement('div');
+                task.classList.add('task');
+                task.setAttribute('draggable', 'true');
+                task.setAttribute('id', taskData.id);
+                task.style.backgroundColor = taskData.color;
+                task.innerHTML = `${taskData.name} <span class="place">${taskData.place}</span><span class="time">${taskData.time}</span><button class="delete-btn">x</button>`;
+                initializeTask(task);
+
+                const parent = taskData.parent === 'tasksContainer' ? tasksContainer : document.getElementById(taskData.parent);
+                parent.appendChild(task);
+            });
+        })
+        .catch(error => {
+            console.error('Error loading tasks from Firestore: ', error);
+        });
+}
+
+document.addEventListener('DOMContentLoaded', loadTasksFromFirestore);
