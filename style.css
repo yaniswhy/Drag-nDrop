@@ -6,6 +6,19 @@ body {
     background-color: #ffffff;
 }
 
+/* Your existing CSS styles */
+
+/* Dark Mode Styles */
+.dark-mode {
+    background-color: #171717; /* Dark mode background color */
+    color: #fff; /* Dark mode text color */
+}
+
+.dark-mode .tasks, .dark-mode .modal-content , .dark-mode input{
+    background-color: #121212; /* Dark mode sidebar background color */
+    color: #fff; /* Dark mode sidebar text color */
+}
+
 .scheduler {
     display: flex;
     justify-content: space-around;
@@ -15,11 +28,10 @@ body {
 }
 
 .day {
-    background-color: #ffffff;
     padding: 10px;
     width: 150px;
     min-height: 70vh;
-    border: 1px solid #6b6b6b;
+    border: 1px solid #2d2d2d;
 }
 
 h3 {
@@ -29,10 +41,10 @@ h3 {
 .tasks {
     display: none;  /* Hidden by default */
     justify-content: flex-start;
+    background-color: white;
     flex-wrap: wrap;
     padding: 20px;
     gap: 10px;
-    background-color: #fff;
     border-right: 1px solid #000;
     height: 100%;
     position: fixed;
@@ -90,7 +102,18 @@ h3 {
     cursor: pointer;
     z-index: 1000;
 }
-
+#toggle-sidebar-btnn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background-color: #000000;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 1000;
+}
 #toggle-sidebar-btn i {
     font-size: 20px;
 }

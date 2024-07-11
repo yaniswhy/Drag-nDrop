@@ -6,32 +6,73 @@
         <title>Drag'nDrop Schedule</title>
         <link rel="stylesheet" href="style.css">
         <link rel="icon" href="favicon.png" type="image/x-icon">
-        
+        <style>
+            .day-buttons {
+                display: none;
+            }
+            @media (max-width: 768px) {
+            .day-buttons {
+                display: flex;
+                justify-content: space-around;
+                margin: 10px 0;
+            }
+    
+            .day-btn {
+                padding: 10px 20px;
+                font-size: 11px;
+                color: black;
+                border: rgb(70, 70, 70);
+                border-radius: 100px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+    
+            .day-btn:hover {
+                background-color: #484848;
+            }}
+        </style>
     </head>
     
 <body>
     <h1 id="print-schedule-btn">Drag'nDrop Schedule</h1>
-    <div class="scheduler">
-        <div class="day" id="monday">
+    <div class="day-buttons">
+        <button class="day-btn" data-day="monday">Lundi</button>
+        <button class="day-btn" data-day="tuesday">Mardi</button>
+        <button class="day-btn" data-day="wednesday">Mercredi</button>
+        <button class="day-btn" data-day="thursday">Jeudi</button>
+        <button class="day-btn" data-day="friday">Vendredi</button>
+        <button class="day-btn" data-day="saturday">Samedi</button>
+        <button class="day-btn" data-day="sunday">Dimanche</button>
+    </div>
+     <!-- Scheduler with day sections -->
+     <div class="scheduler">
+        <div class="day" id="monday-section">
             <h3>Lundi</h3>
+            <!-- Tasks for Monday -->
         </div>
-        <div class="day" id="tuesday">
+        <div class="day" id="tuesday-section">
             <h3>Mardi</h3>
+            <!-- Tasks for Tuesday -->
         </div>
-        <div class="day" id="wednesday">
+        <div class="day" id="wednesday-section">
             <h3>Mercredi</h3>
+            <!-- Tasks for Wednesday -->
         </div>
-        <div class="day" id="thursday">
+        <div class="day" id="thursday-section">
             <h3>Jeudi</h3>
+            <!-- Tasks for Thursday -->
         </div>
-        <div class="day" id="friday">
+        <div class="day" id="friday-section">
             <h3>Vendredi</h3>
+            <!-- Tasks for Friday -->
         </div>
-        <div class="day" id="saturday">
+        <div class="day" id="saturday-section">
             <h3>Samedi</h3>
+            <!-- Tasks for Saturday -->
         </div>
-        <div class="day" id="sunday">
+        <div class="day" id="sunday-section">
             <h3>Dimanche</h3>
+            <!-- Tasks for Sunday -->
         </div>
     </div>
     <div id="sidebar" class="tasks">
@@ -41,6 +82,7 @@
         <div class="task" draggable="true" id="task-3" style="background-color: #ffcc66;">Task 3 <span class="place">Room 3</span><span class="time">12:00 PM</span><button class="delete-btn">x</button></div>
     </div>
     <button id="toggle-sidebar-btn"><i class="fas fa-bars"></i></button>
+    <button id="toggle-sidebar-btnn"><i class="fas fa-bars"></i></button>
 
     <!-- Add Task Modal Overlay -->
 <div id="task-modal" class="modal">
@@ -75,10 +117,26 @@
         <button id="edit-task-modal-btn">Save Changes</button>
     </div>
 </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag'nDrop Schedule</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.png" type="image/x-icon">
+</head>
+<body>
+    <script src="script.js"></script>
+</body>
+</html>
+
+
 
 
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     <script src="script.js"></script>
+    
 </body>
 </html>
 
