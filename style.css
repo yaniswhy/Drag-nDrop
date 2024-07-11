@@ -48,7 +48,8 @@ h3 {
     background-color: #456C86;
     color: white;
     padding: 10px;
-
+    margin: 5px; 
+    /* i jus added that */
     cursor: grab;
     user-select: none;
     display: flex;
