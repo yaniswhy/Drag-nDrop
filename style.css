@@ -233,8 +233,17 @@ input[type="color"] {
         right: 10px;
         padding: 10px;
     }
+    #toggle-sidebar-btnn {
+        width: 13px;
+        top: 10px;
+        right: 10px;
+        padding: 10px;
+    }
 
     #toggle-sidebar-btn i {
+        font-size: 16px;
+    }
+    #toggle-sidebar-btnn i {
         font-size: 16px;
     }
 

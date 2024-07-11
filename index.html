@@ -9,26 +9,34 @@
         <style>
             .day-buttons {
                 display: none;
+                
             }
             @media (max-width: 768px) {
             .day-buttons {
+                position: fixed;
                 display: flex;
                 justify-content: space-around;
                 margin: 10px 0;
+                gap: 5px;
+                margin-left: 10px;
+                overflow: scroll;
             }
     
             .day-btn {
                 padding: 10px 20px;
                 font-size: 11px;
                 color: black;
+                background-color: #efefef;
                 border: rgb(70, 70, 70);
                 border-radius: 100px;
                 cursor: pointer;
                 transition: background-color 0.3s ease;
+                text-decoration: none; /* Remove underline from anchor tags */
+                display: inline-block; /* Ensure buttons are displayed inline */
             }
     
             .day-btn:hover {
-                background-color: #484848;
+                background-color: #bbbbbb;
             }}
         </style>
     </head>
@@ -36,13 +44,13 @@
 <body>
     <h1 id="print-schedule-btn">Drag'nDrop Schedule</h1>
     <div class="day-buttons">
-        <button class="day-btn" data-day="monday">Lundi</button>
-        <button class="day-btn" data-day="tuesday">Mardi</button>
-        <button class="day-btn" data-day="wednesday">Mercredi</button>
-        <button class="day-btn" data-day="thursday">Jeudi</button>
-        <button class="day-btn" data-day="friday">Vendredi</button>
-        <button class="day-btn" data-day="saturday">Samedi</button>
-        <button class="day-btn" data-day="sunday">Dimanche</button>
+        <a href="#monday-section" class="day-btn" id="monday-btn">Lundi</a>
+        <a href="#tuesday-section" class="day-btn" id="tuesday-btn">Mardi</a>
+        <a href="#wednesday-section" class="day-btn" id="wednesday-btn">Mercredi</a>
+        <a href="#thursday-section" class="day-btn" id="thursday-btn">Jeudi</a>
+        <a href="#friday-section" class="day-btn" id="friday-btn">Vendredi</a>
+        <a href="#saturday-section" class="day-btn" id="saturday-btn">Samedi</a>
+        <a href="#sunday-section" class="day-btn" id="sunday-btn">Dimanche</a>
     </div>
      <!-- Scheduler with day sections -->
      <div class="scheduler">
@@ -81,6 +89,7 @@
         <div class="task" draggable="true" id="task-2" style="background-color: #ff9966;">Task 2 <span class="place">Room 2</span><span class="time">11:00 AM</span><button class="delete-btn">x</button></div>
         <div class="task" draggable="true" id="task-3" style="background-color: #ffcc66;">Task 3 <span class="place">Room 3</span><span class="time">12:00 PM</span><button class="delete-btn">x</button></div>
     </div>
+
     <button id="toggle-sidebar-btn"><i class="fas fa-bars"></i></button>
     <button id="toggle-sidebar-btnn"><i class="fas fa-bars"></i></button>
 
