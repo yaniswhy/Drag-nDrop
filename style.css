@@ -48,7 +48,7 @@ h3 {
     background-color: #456C86;
     color: white;
     padding: 10px;
-    margin: 5px;
+
     cursor: grab;
     user-select: none;
     display: flex;
@@ -202,7 +202,6 @@ input[type="color"] {
 
     .task {
         width: 90%;
-        margin: 10px auto;
     }
 
     #toggle-sidebar-btn {
@@ -226,24 +225,38 @@ input[type="color"] {
     }
 
     .modal-content {
-        margin: 10px;
-        width: 90%;
-    }
-
-    .close-btn, .edit-close-btn {
-        top: 5px;
-        right: 10px;
+        margin: 0; /* Adjust margin for full width */
+        padding: 15px; /* Adjust padding for smaller screens */
+        box-sizing: border-box; /* Include padding in width calculation */
+        position: fixed;
+        width: 100%;
+        bottom: 0;
     }
 
     input[type="text"],
     input[type="time"],
     input[type="color"] {
-        width: calc(100% - 10px);
-        padding: 8px;
+        width: calc(100% - 30px); /* Adjust input width for padding */
+        padding: 10px;
+        margin: 10px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box; /* Ensure padding is included in width */
+    }
+
+    .close-btn, .edit-close-btn {
+        top: 5px; /* Adjust close button position for small screens */
+        right: 15px; /* Adjust close button position for small screens */
     }
 
     #add-task-modal-btn, #edit-task-modal-btn {
         padding: 10px;
         margin: 5px 0;
+    }
+
+    h3
+    {
+      text-align: left;
     }
 }

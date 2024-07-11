@@ -17,6 +17,7 @@ const editTaskPlaceInput = document.getElementById('edit-task-place');
 const editTaskTimeInput = document.getElementById('edit-task-time');
 const editTaskColorInput = document.getElementById('edit-task-color');
 
+
 const printScheduleBtn = document.getElementById('print-schedule-btn');
 
 printScheduleBtn.addEventListener('click', () => {
