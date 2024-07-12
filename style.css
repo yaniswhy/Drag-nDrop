@@ -296,6 +296,12 @@ input[type="color"] {
         padding: 10px;
     }
 
+    #toggle-sidebar-btnnn {
+        top: 20px;
+        left: 50px;
+        padding: 8px;
+    }
+
     #toggle-sidebar-btn i {
         font-size: 16px;
     }
