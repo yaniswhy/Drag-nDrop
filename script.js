@@ -17,6 +17,38 @@ const editTaskPlaceInput = document.getElementById('edit-task-place');
 const editTaskTimeInput = document.getElementById('edit-task-time');
 const editTaskColorInput = document.getElementById('edit-task-color');
 
+document.getElementById('toggle-sidebar-btnnn').addEventListener('click', function() {
+    // Sélectionne toutes les colonnes de jours
+    const daySections = document.querySelectorAll('.day');
+    
+    // Parcourt chaque colonne de jour
+    daySections.forEach(function(section) {
+        // Efface toutes les tâches dans cette colonne
+        section.innerHTML = '<h3>' + section.querySelector('h3').textContent + '</h3>';
+    });
+});
+document.addEventListener('DOMContentLoaded', function() {
+    const body = document.body;
+    const toggleBtn = document.getElementById('toggle-sidebar-btnn');
+    
+    // Initial theme mode (light mode)
+    let isDarkMode = false;
+
+    toggleBtn.addEventListener('click', function() {
+        // Toggle dark mode
+        isDarkMode = !isDarkMode;
+
+        if (isDarkMode) {
+            body.classList.add('dark-mode');
+            toggleBtn.style.color = '#fff'; // Change button color in dark mode
+        } else {
+            body.classList.remove('dark-mode');
+            toggleBtn.style.color = '#000'; // Change button color in light mode
+        }
+    });
+});
+
+
 const printScheduleBtn = document.getElementById('print-schedule-btn');
 
 printScheduleBtn.addEventListener('click', () => {
@@ -206,5 +238,6 @@ window.addEventListener('click', (e) => {
 toggleSidebarBtn.addEventListener('click', () => {
     document.body.classList.toggle('sidebar-active');
 });
+
 
 initializeDragAndDrop();

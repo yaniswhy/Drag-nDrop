@@ -6,38 +6,10 @@
         <title>Drag'nDrop Schedule</title>
         <link rel="stylesheet" href="style.css">
         <link rel="icon" href="favicon.png" type="image/x-icon">
-        <style>
-            .day-buttons {
-                display: none;
-                
-            }
-            @media (max-width: 768px) {
-            .day-buttons {
-                display: flex;
-                justify-content: space-around;
-                margin: 10px 0;
-                gap: 5px;
-                margin-left: 10px;
-                overflow: scroll;
-            }
-    
-            .day-btn {
-                padding: 10px 20px;
-                font-size: 11px;
-                color: black;
-                background-color: #efefef;
-                border: rgb(70, 70, 70);
-                border-radius: 100px;
-                cursor: pointer;
-                transition: background-color 0.3s ease;
-                text-decoration: none; /* Remove underline from anchor tags */
-                display: inline-block; /* Ensure buttons are displayed inline */
-            }
-    
-            .day-btn:hover {
-                background-color: #bbbbbb;
-            }}
-        </style>
+        <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js"></script>
+
+        
     </head>
     
 <body>
@@ -91,6 +63,7 @@
 
     <button id="toggle-sidebar-btn"><i class="fas fa-bars"></i></button>
     <button id="toggle-sidebar-btnn"><i class="fas fa-bars"></i></button>
+    <button id="toggle-sidebar-btnnn"><i class="fas fa-bars"></i></button>
 
     <!-- Add Task Modal Overlay -->
 <div id="task-modal" class="modal">
@@ -125,26 +98,30 @@
         <button id="edit-task-modal-btn">Save Changes</button>
     </div>
 </div>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Drag'nDrop Schedule</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="favicon.png" type="image/x-icon">
-</head>
-<body>
-    <script src="script.js"></script>
-</body>
-</html>
 
 
-
-
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
-    <script src="script.js"></script>
-    
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDGQoKm3mR6AEfB0S5BNqKRhmAB2mT_nOw",
+      authDomain: "drag-ndrop-4c524.firebaseapp.com",
+      projectId: "drag-ndrop-4c524",
+      storageBucket: "drag-ndrop-4c524.appspot.com",
+      messagingSenderId: "159228330206",
+      appId: "1:159228330206:web:2bcded151a12293a2ec24f"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+  </script>
+  <script src="app.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
 
