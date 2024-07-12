@@ -59,7 +59,7 @@ h3 {
     position: fixed;
     top: 0;
     right: 0;
-    width: 30%;
+    width: 20%;
     max-width: 200px;
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
     overflow-y: scroll;
@@ -70,7 +70,7 @@ h3 {
     color: white;
     padding: 10px;
     margin: 5px; 
-    /* i jus added that */
+    text-align: left;
     cursor: grab;
     user-select: none;
     display: flex;
@@ -78,9 +78,7 @@ h3 {
     align-items: flex-start;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-height: 100%; /* Adjust the maximum height value as needed */
-    width: 80%; /* Adjust the width value as needed */
-    overflow: hidden; /* Hide overflow */
+    max-height: 100%;
 }
 .task .place, .task .time {
     margin-top: 5px;
@@ -229,7 +227,8 @@ input[type="color"] {
     }
 
     .tasks {
-        width: 100%;
+        width: 30%;
+        max-width: 200px;
         padding: 10px;
     }
 
