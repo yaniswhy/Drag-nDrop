@@ -5,6 +5,7 @@
 }
 
 body {
+    width: 100%;
     font-family: Arial, sans-serif;
     background-color: #1E276A; /* Updated background color */
     color: #fff; /* Updated text color for better readability on dark background */
@@ -53,10 +54,11 @@ main {
     display: grid;
     gap: 20px;
     margin-bottom: 15px;
+    justify-items: center; /* Center items horizontally */
 }
 
 .buttons-section {
-    grid-template-columns: repeat(4, 1fr); /* Three columns */
+    grid-template-columns: repeat(4, 1fr); /* Four columns */
     margin-bottom: 40px; /* Separation between sections */
 }
 
@@ -73,14 +75,14 @@ main {
     transition: transform 0.3s;
 }
 
-.button-card
-{
-    height: 150px;
+.button-card {
+    height: 150px; /* Adjusted height */
+    width: 100%; /* Full width within grid cell */
 }
 
-.link-card
-{
-    height: 180px;
+.link-card {
+    height: 180px; /* Adjusted height */
+    width: 100%; /* Full width within grid cell */
 }
 
 .button-card:hover, .link-card:hover {
@@ -103,14 +105,15 @@ h2 {
 }
 
 .button-card:nth-child(3) {
-    background-color: #4da560; /* Light yellow */
+    background-color: #4da560; /* Light green */
 }
+
 .button-card:nth-child(4) {
     background-color: #ecac45; /* Light yellow */
 }
 
 .link-card:nth-child(1) {
-    background-color: #52B5E5; /* Light green */
+    background-color: #52B5E5; /* Light blue */
 }
 
 .link-card:nth-child(2) {
@@ -120,7 +123,6 @@ h2 {
 .link-card:nth-child(3) {
     background-color: #d16cf9; /* Light blue */
 }
-
 
 .illustration {
     width: 100px; /* Adjust width as needed */
@@ -132,19 +134,9 @@ h2 {
     .buttons-section, .links-section {
         grid-template-columns: 1fr 1fr; /* Two columns on tablet */
     }
-    img {
-        width: 30%;
-        max-width: 100px;
+    
+    .button-card, .link-card {
+        width: 150px; /* Adjusted width */
+        height: 125px; /* Adjusted height */
     }
-    .button-card
-{
-    width:150px;
-    height: 125px;
 }
-.link-card
-{
-    width: 150px;
-    height: 125px;
-}
-}
-
