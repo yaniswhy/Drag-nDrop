@@ -28,7 +28,6 @@ header {
     vertical-align: middle;
 }
 
-
 h1 {
     display: flex;
     justify-content: center;
@@ -36,11 +35,11 @@ h1 {
     margin-left: 10px;
 }
 
-img
-{
+img {
     width: 40%;
     max-width: 100px;
 }
+
 main {
     width: 80%;
     max-width: 1200px;
@@ -58,7 +57,7 @@ main {
 }
 
 .buttons-section {
-    grid-template-columns: repeat(3, 1fr); /* Three columns */
+    grid-template-columns: repeat(4, 1fr); /* Three columns */
     margin-bottom: 40px; /* Separation between sections */
 }
 
@@ -99,6 +98,9 @@ h2 {
 .button-card:nth-child(3) {
     background-color: #41a757; /* Light yellow */
 }
+.button-card:nth-child(4) {
+    background-color: #ecac45; /* Light yellow */
+}
 
 .link-card:nth-child(1) {
     background-color: #52B5E5; /* Light green */
@@ -108,6 +110,11 @@ h2 {
     background-color: #6cf98a; /* Light blue */
 }
 
+.illustration {
+    width: 100px; /* Adjust width as needed */
+    margin-top: 10px;
+}
+
 /* Responsive design adjustments */
 @media (max-width: 768px) {
     .buttons-section, .links-section {
@@ -115,12 +122,3 @@ h2 {
     }
 }
 
-@media (max-width: 480px) {
-    .buttons-section, .links-section {
-        grid-template-columns: 1fr; /* One column on phone */
-    }
-
-    .buttons-section {
-        grid-template-columns: repeat(3, 1fr); /* Three columns on phone for managing website buttons */
-    }
-}
