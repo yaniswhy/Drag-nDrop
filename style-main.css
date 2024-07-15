@@ -133,5 +133,14 @@ h2 {
     .buttons-section, .links-section {
         grid-template-columns: 1fr 1fr; /* Two columns on tablet */
     }
+    .button-card
+{
+    width:200px;
+}
+
+.link-card
+{
+    width: 200px;
+}
 }
 
