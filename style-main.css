@@ -53,7 +53,7 @@ main {
     width: 100%;
     display: grid;
     gap: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .buttons-section {
@@ -67,13 +67,21 @@ main {
 
 .button-card, .link-card {
     border-radius: 5px;
-    height: fit-content; 
-    max-height: 200px;
     padding: 25px;
     text-align: center;
     cursor: pointer;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s;
+}
+
+.button-card
+{
+    height: 150px;
+}
+
+.link-card
+{
+    height: 180px;
 }
 
 .button-card:hover, .link-card:hover {
@@ -96,7 +104,7 @@ h2 {
 }
 
 .button-card:nth-child(3) {
-    background-color: #41a757; /* Light yellow */
+    background-color: #4da560; /* Light yellow */
 }
 .button-card:nth-child(4) {
     background-color: #ecac45; /* Light yellow */
@@ -107,8 +115,13 @@ h2 {
 }
 
 .link-card:nth-child(2) {
-    background-color: #6cf98a; /* Light blue */
+    background-color: #31d2b7; /* Light blue */
 }
+
+.link-card:nth-child(3) {
+    background-color: #d16cf9; /* Light blue */
+}
+
 
 .illustration {
     width: 100px; /* Adjust width as needed */

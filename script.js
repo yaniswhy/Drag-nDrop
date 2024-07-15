@@ -8,7 +8,6 @@ const taskNameInput = document.getElementById('task-name');
 const taskPlaceInput = document.getElementById('task-place');
 const taskTimeInput = document.getElementById('task-time');
 const taskColorInput = document.getElementById('task-color');
-
 const editModal = document.getElementById('edit-task-modal');
 const editCloseBtn = document.querySelector('.edit-close-btn');
 const editTaskModalBtn = document.getElementById('edit-task-modal-btn');
@@ -17,21 +16,10 @@ const editTaskPlaceInput = document.getElementById('edit-task-place');
 const editTaskTimeInput = document.getElementById('edit-task-time');
 const editTaskColorInput = document.getElementById('edit-task-color');
 
-
-document.getElementById('toggle-sidebar-btnnn').addEventListener('click', function() {
-    // Sélectionne toutes les colonnes de jours
-    const daySections = document.querySelectorAll('.day');
-    
-    // Parcourt chaque colonne de jour
-    daySections.forEach(function(section) {
-        // Efface toutes les tâches dans cette colonne
-        section.innerHTML = '<h3>' + section.querySelector('h3').textContent + '</h3>';
-    });
-});
 document.addEventListener('DOMContentLoaded', function() {
     const body = document.body;
     const toggleBtn = document.getElementById('toggle-sidebar-btnn');
-    
+
     // Initial theme mode (light mode)
     let isDarkMode = false;
 
@@ -57,20 +45,15 @@ printScheduleBtn.addEventListener('click', () => {
     tasksContainer.style.display = 'none';
     modal.style.display = 'none';
     editModal.style.display = 'none';
-
     // Print the schedule
     window.print();
-
     // Show the task bar and overlays after printing
     tasksContainer.style.display = '';
     modal.style.display = '';
     editModal.style.display = '';
 });
-
 let currentTaskId = null;
-
 const days = document.querySelectorAll('.day');
-
 function initializeDragAndDrop() {
     const tasks = document.querySelectorAll('.task');
     tasks.forEach(task => {
@@ -78,20 +61,17 @@ function initializeDragAndDrop() {
         task.addEventListener('dragend', dragEnd);
         task.addEventListener('dblclick', openEditModal);
     });
-
     days.forEach(day => {
         day.addEventListener('dragover', dragOver);
         day.addEventListener('dragenter', dragEnter);
         day.addEventListener('dragleave', dragLeave);
         day.addEventListener('drop', drop);
     });
-
     const deleteButtons = document.querySelectorAll('.delete-btn');
     deleteButtons.forEach(button => {
         button.addEventListener('click', deleteTask);
     });
 }
-
 function dragStart(e) {
     e.dataTransfer.setData('text/plain', e.target.id);
     e.dataTransfer.effectAllowed = 'move'; // Specify the operation allowed (move)
@@ -99,24 +79,19 @@ function dragStart(e) {
         e.target.classList.add('hide');
     }, 0);
 }
-
 function dragEnd(e) {
     e.target.classList.remove('hide');
 }
-
 function dragOver(e) {
     e.preventDefault();
 }
-
 function dragEnter(e) {
     e.preventDefault();
     e.target.classList.add('hovered');
 }
-
 function dragLeave(e) {
     e.target.classList.remove('hovered');
 }
-
 function drop(e) {
     e.preventDefault();
     e.target.classList.remove('hovered');
@@ -127,7 +102,6 @@ function drop(e) {
     if (draggable.parentElement === e.target) {
         return;
     }
-
     // If the task is dragged from the sidebar, clone it
     if (draggable.parentElement === tasksContainer) {
         const clone = draggable.cloneNode(true);
@@ -140,15 +114,12 @@ function drop(e) {
         e.target.appendChild(draggable);
     }
 }
-
 function openModal() {
     modal.style.display = 'block';
 }
-
 function closeModal() {
     modal.style.display = 'none';
 }
-
 function openEditModal(e) {
     currentTaskId = e.target.id;
     const task = document.getElementById(currentTaskId);
@@ -158,18 +129,15 @@ function openEditModal(e) {
     editTaskColorInput.value = rgbToHex(task.style.backgroundColor); // Convert RGB to hex
     editModal.style.display = 'block';
 }
-
 function closeEditModal() {
     editModal.style.display = 'none';
 }
-
 function addTask() {
     const taskName = taskNameInput.value.trim();
     const taskPlace = taskPlaceInput.value.trim();
     const taskTime = taskTimeInput.value;
     const taskColor = taskColorInput.value;
     if (taskName === '' || taskPlace === '' || taskTime === '') return;
-
     const taskId = `task-${document.querySelectorAll('.task').length + 1}`;
     const newTask = document.createElement('div');
     newTask.classList.add('task');
@@ -177,38 +145,30 @@ function addTask() {
     newTask.setAttribute('id', taskId);
     newTask.style.backgroundColor = taskColor;
     newTask.innerHTML = `${taskName} <span class="place">${taskPlace}</span><span class="time">${taskTime}</span><button class="delete-btn">x</button>`;
-
     tasksContainer.appendChild(newTask);
     closeModal();
-
     taskNameInput.value = '';
     taskPlaceInput.value = '';
     taskTimeInput.value = '';
     taskColorInput.value = '#456C86';
-
     initializeDragAndDrop();
 }
-
 function editTask() {
     const taskName = editTaskNameInput.value.trim();
     const taskPlace = editTaskPlaceInput.value.trim();
     const taskTime = editTaskTimeInput.value;
     const taskColor = editTaskColorInput.value;
     if (taskName === '' || taskPlace === '' || taskTime === '') return;
-
     const task = document.getElementById(currentTaskId);
     task.style.backgroundColor = taskColor;
     task.innerHTML = `${taskName} <span class="place">${taskPlace}</span><span class="time">${taskTime}</span><button class="delete-btn">x</button>`;
-
     initializeTask(task);
     closeEditModal();
 }
-
 function deleteTask(e) {
     const task = e.target.parentElement;
     task.remove();
 }
-
 function initializeTask(task) {
     task.addEventListener('dragstart', dragStart);
     task.addEventListener('dragend', dragEnd);
@@ -216,18 +176,15 @@ function initializeTask(task) {
     const deleteButton = task.querySelector('.delete-btn');
     deleteButton.addEventListener('click', deleteTask);
 }
-
 function rgbToHex(rgb) {
     const rgbArray = rgb.match(/\d+/g);
     return `#${((1 << 24) + (parseInt(rgbArray[0]) << 16) + (parseInt(rgbArray[1]) << 8) + parseInt(rgbArray[2])).toString(16).slice(1).toUpperCase()}`;
 }
-
 openModalBtn.addEventListener('click', openModal);
 closeBtn.addEventListener('click', closeModal);
 addTaskModalBtn.addEventListener('click', addTask);
 editCloseBtn.addEventListener('click', closeEditModal);
 editTaskModalBtn.addEventListener('click', editTask);
-
 window.addEventListener('click', (e) => {
     if (e.target === modal) {
         closeModal();
@@ -235,7 +192,7 @@ window.addEventListener('click', (e) => {
         closeEditModal();
     }
 });
-
 toggleSidebarBtn.addEventListener('click', () => {
     document.body.classList.toggle('sidebar-active');
 });
+initializeDragAndDrop();
