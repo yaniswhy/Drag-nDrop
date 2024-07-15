@@ -14,8 +14,11 @@
     <div id="loginOverlay" class="overlay">
         <div class="overlay-content">
             <span class="close-btn" id="closeBtn">&times;</span>
-            <button id="inv" class="inv">Invited mode</button>
-            <h2 style="text-align: center;color: #1E276A; margin: 10px;">Login</h2>
+            <div class="inv">
+                <button id="inv" class="Admin"><h3>Admin mode</h3></button>
+                <button id="inv" class="Invited"><h3>Invited mode</h3></button>
+            </div>          
+            <h2 style="text-align: center;color: #1d2881; margin: 10px;">Login</h2>
             <form>
                 <input type="email" placeholder="Email" id="email" name="email" required>
                 <input type="password" placeholder="Password" id="password" name="password" required>
