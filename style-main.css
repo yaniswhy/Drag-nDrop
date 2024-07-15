@@ -124,9 +124,9 @@ h2 {
     background-color: #d16cf9; /* Light blue */
 }
 
-.illustration {
-    width: 100px; /* Adjust width as needed */
-    margin-top: 10px;
+img {
+    width: 40%; /* Adjust width as needed */
+
 }
 
 /* Responsive design adjustments */
@@ -134,9 +134,16 @@ h2 {
     .buttons-section, .links-section {
         grid-template-columns: 1fr 1fr; /* Two columns on tablet */
     }
+    img {
+        width: 40%; /* Adjust width as needed */
     
-    .button-card, .link-card {
+    }
+    .button-card {
         width: 150px; /* Adjusted width */
         height: 125px; /* Adjusted height */
+    }
+    .link-card {
+        width: 150px; /* Adjusted width */
+        height: 130px; /* Adjusted height */
     }
 }
