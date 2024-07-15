@@ -105,4 +105,16 @@ form button {
                 transform: none;
                 border-radius: 8px 8px 0 0;
                 }
+
+.inv
+{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 10px;
+    color: black;
+    border: 1px solid #1E276A;;
+    cursor: pointer;
+    border-radius: 20px;
+    width: 100%;
+}
 }
