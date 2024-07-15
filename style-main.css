@@ -32,7 +32,6 @@ h1 {
     display: flex;
     justify-content: center;
     text-align: center;
-    margin-left: 10px;
 }
 
 img {
@@ -133,14 +132,19 @@ h2 {
     .buttons-section, .links-section {
         grid-template-columns: 1fr 1fr; /* Two columns on tablet */
     }
+    img {
+        width: 30%;
+        max-width: 100px;
+    }
     .button-card
 {
-    width:200px;
+    width:150px;
+    height: 125px;
 }
-
 .link-card
 {
-    width: 200px;
+    width: 150px;
+    height: 125px;
 }
 }
 
