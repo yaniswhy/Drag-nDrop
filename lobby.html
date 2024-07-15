@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager</title>
+    <link rel="stylesheet" href="assests/styles/style-lobby.css">
+    <link rel="stylesheet" href="assests/styles/style-auth.css">
+    <link rel="icon" type="image/png" href="assests/SU.png">
+</head>
+<body>
+    <img id="loginBtn" src="assests/Icons/login.png">
+
+    <div id="loginOverlay" class="overlay">
+        <div class="overlay-content">
+            <span class="close-btn" id="closeBtn">&times;</span>
+            <h2>Login</h2>
+            <form>
+                <input type="email" placeholder="Email" id="email" name="email" required>
+                <input type="password" placeholder="Password" id="password" name="password" required>
+                <div class="google-login">
+                    <img src="assests/google-logo.png" alt="Google Login" id="googleLogin">
+                    <button type="submit">Submit</button>
+                </div>        
+            </form>
+        </div>
+    </div>
+    <img class="myLOGO" src="assests/Signatures/Signature.png" onclick="window.location.href='https://www.instagram.com/_yanns__/'">
+    <header>
+        <img src="assests/SU.png" alt="Sorbonne Université Logo" class="logo">
+        <h1>Manager</h1>
+    </header>
+    <main>
+        <section class="buttons-section">
+            <div class="button-card" onclick="window.location.href='dragndrop.html'">
+                <img src="assests/Icons/drag-and-drop.png">
+                <h2>Drag'nDrop</h2>
+            </div>
+            <div class="button-card" onclick="window.location.href='budget.html'">
+                <img src="assests/Icons/budget.png">
+                <h2>Budget</h2>
+            </div>
+            <div class="button-card" onclick="window.location.href='notes.html'">
+                <img src="assests/Icons/note.png">
+                <h2>Notes</h2>
+            </div>
+            <div class="button-card" onclick="window.location.href='help.html'">
+                <img style="margin-left: 10px;" src="assests/Icons/confused.png">
+                <h2>Aide</h2>
+            </div>
+        </section>
+       
+        <section class="links-section">
+            <div class="link-card" onclick="window.location.href='https://www.sorbonne-universite.fr/'">
+                <img src="assests/Icons/SUbtn.png">
+                <h2>SorbonneU</h2>
+            </div>
+            <div class="link-card" onclick="window.location.href='https://zcs.sorbonne-universite.fr/'">
+                <img src="assests/Icons/comments.png">
+                <h2>Messagerie</h2>
+            </div>
+            <div class="link-card" onclick="window.location.href='https://buresa.sorbonne-universite.fr/ReservationSalles//'">
+                <img src="assests/Icons/digital-library.png">
+                <h2>Bibliothèque</h2>
+            </div>
+            <!-- Add more cards here linking to different websites of Sorbonne Université -->
+        </section>
+    </main>
+<script src="scripts/auth.js"></script>
+</body>
+</html>
