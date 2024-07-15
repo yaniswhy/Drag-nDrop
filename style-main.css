@@ -117,7 +117,7 @@ h2 {
 }
 
 .link-card:nth-child(2) {
-    background-color: #31d2b7; /* Light blue */
+    background-color: #2db9a2; /* Light blue */
 }
 
 .link-card:nth-child(3) {
@@ -127,6 +127,15 @@ h2 {
 img {
     width: 40%; /* Adjust width as needed */
 
+}
+.myLOGO
+{
+  width: 80px;  
+  position:absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  cursor: pointer;
 }
 
 /* Responsive design adjustments */
