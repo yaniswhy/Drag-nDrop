@@ -17,27 +17,6 @@ const editTaskPlaceInput = document.getElementById('edit-task-place');
 const editTaskTimeInput = document.getElementById('edit-task-time');
 const editTaskColorInput = document.getElementById('edit-task-color');
 
-document.getElementById('button1').addEventListener('click', function() {
-    showPage('page1');
-});
-
-document.getElementById('button2').addEventListener('click', function() {
-    showPage('page2');
-});
-
-document.getElementById('button3').addEventListener('click', function() {
-    showPage('page3');
-});
-
-function showPage(pageId) {
-    // Hide all pages
-    document.getElementById('page1').style.display = 'none';
-    document.getElementById('page2').style.display = 'none';
-    document.getElementById('page3').style.display = 'none';
-    
-    // Show the selected page
-    document.getElementById(pageId).style.display = 'block';
-}
 
 document.getElementById('toggle-sidebar-btnnn').addEventListener('click', function() {
     // Sélectionne toutes les colonnes de jours
@@ -260,6 +239,3 @@ window.addEventListener('click', (e) => {
 toggleSidebarBtn.addEventListener('click', () => {
     document.body.classList.toggle('sidebar-active');
 });
-
-
-initializeDragAndDrop();

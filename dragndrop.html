@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Drag'nDrop Schedule</title>
+        <link rel="stylesheet" href="style.css">
+        <link rel="icon" href="SU.png" type="image/x-icon">
+        <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js"></script>
+    </head>
+    
+<body>
+    <h1 id="print-schedule-btn">Drag'nDrop Schedule</h1>
+    <div class="day-buttons">
+        <a href="#monday-section" class="day-btn" id="monday-btn">Lundi</a>
+        <a href="#tuesday-section" class="day-btn" id="tuesday-btn">Mardi</a>
+        <a href="#wednesday-section" class="day-btn" id="wednesday-btn">Mercredi</a>
+        <a href="#thursday-section" class="day-btn" id="thursday-btn">Jeudi</a>
+        <a href="#friday-section" class="day-btn" id="friday-btn">Vendredi</a>
+        <a href="#saturday-section" class="day-btn" id="saturday-btn">Samedi</a>
+        <a href="#sunday-section" class="day-btn" id="sunday-btn">Dimanche</a>
+    </div>
+     <!-- Scheduler with day sections -->
+     <div class="scheduler">
+        <div class="day" id="monday-section">
+            <h3>Lundi</h3>
+            <!-- Tasks for Monday -->
+        </div>
+        <div class="day" id="tuesday-section">
+            <h3>Mardi</h3>
+            <!-- Tasks for Tuesday -->
+        </div>
+        <div class="day" id="wednesday-section">
+            <h3>Mercredi</h3>
+            <!-- Tasks for Wednesday -->
+        </div>
+        <div class="day" id="thursday-section">
+            <h3>Jeudi</h3>
+            <!-- Tasks for Thursday -->
+        </div>
+        <div class="day" id="friday-section">
+            <h3>Vendredi</h3>
+            <!-- Tasks for Friday -->
+        </div>
+        <div class="day" id="saturday-section">
+            <h3>Samedi</h3>
+            <!-- Tasks for Saturday -->
+        </div>
+        <div class="day" id="sunday-section">
+            <h3>Dimanche</h3>
+            <!-- Tasks for Sunday -->
+        </div>
+    </div>
+    <div id="sidebar" class="tasks">
+        <button id="add-task-btn"><i class="fas fa-plus"></i></button>
+        <div class="task" draggable="true" id="task-1" style="background-color: #ff6666;">Task 1 <span class="place">Room 1</span><span class="time">10:00 AM</span><button class="delete-btn">x</button></div>
+        <div class="task" draggable="true" id="task-2" style="background-color: #ff9966;">Task 2 <span class="place">Room 2</span><span class="time">11:00 AM</span><button class="delete-btn">x</button></div>
+        <div class="task" draggable="true" id="task-3" style="background-color: #ffcc66;">Task 3 <span class="place">Room 3</span><span class="time">12:00 PM</span><button class="delete-btn">x</button></div>
+    </div>
+
+    <button id="toggle-sidebar-btn"><i class="fas fa-bars"></i></button>
+    <button id="toggle-sidebar-btnn"><i class="fas fa-bars"></i></button>
+    <button id="toggle-sidebar-btnnn"><i class="fas fa-bars"></i></button>
+
+    <!-- Add Task Modal Overlay -->
+<div id="task-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2>Add New Task</h2>
+        <label for="task-name">Name:</label>
+        <input type="text" id="task-name" required>
+        <label for="task-place">Place:</label>
+        <input type="text" id="task-place" required>
+        <label for="task-time">Time:</label>
+        <input type="time" id="task-time" required>
+        <label for="task-color">Color:</label>
+        <input type="color" id="task-color" value="#456C86" required>
+        <button id="add-task-modal-btn">Add Task</button>
+    </div>
+</div>
+
+    <!-- Edit Task Modal Overlay -->
+<div id="edit-task-modal" class="modal">
+    <div class="modal-content">
+        <span class="edit-close-btn">&times;</span>
+        <h2>Edit Task</h2>
+        <label for="edit-task-name">Name:</label>
+        <input type="text" id="edit-task-name" required>
+        <label for="edit-task-place">Place:</label>
+        <input type="text" id="edit-task-place" required>
+        <label for="edit-task-time">Time:</label>
+        <input type="time" id="edit-task-time" required>
+        <label for="edit-task-color">Color:</label>
+        <input type="color" id="edit-task-color" value="#456C86" required>
+        <button id="edit-task-modal-btn">Save Changes</button>
+    </div>
+</div>
+
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+<script type="module" src="script.js"></script>
+</body>
+</html>
+
+
+
