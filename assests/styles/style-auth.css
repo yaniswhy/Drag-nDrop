@@ -1,16 +1,16 @@
 #loginBtn {
-    position: fixed;
+    position: absolute;
     top: 10px;
     right: 10px;
     padding: 8px;
     font-size: 14px;
     border-radius: 20px;
     cursor: pointer;
-    width: 50px;
+    width: 60px;
 }
 
 .overlay {
-    display: none;
+
     position: fixed;
     top: 0;
     left: 0;
@@ -26,15 +26,9 @@
     padding: 20px;
     border-radius: 8px;
     width: 300px;
-    max-width: 80%;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-}
-h2
-{
-    text-align: center;
-    color: #1E276A;
 }
 .close-btn {
     position: absolute;
@@ -61,7 +55,7 @@ form input {
 
 .google-login
 {
-    margin-top: 20px;
+    margin-top: 30px;
     height: 30px;
     display: flex;
     flex-direction: row;
@@ -87,13 +81,15 @@ form button {
 
 /* Mobile styles */
 @media (max-width: 600px) {
-    .overlay-content {
-        position: fixed;
-        width: 100%;
-        height: 40%;
-        bottom: 0;
-        left: 0;
-        transform: none;
-        border-radius: 8px 8px 0 0;
-    }
+               .overlay-content {
+                position: absolute;
+                width: 100%;
+                height: 40%;
+                bottom: 0;
+                left: 0;
+                top: auto;
+                margin: 0;
+                transform: none;
+                border-radius: 8px 8px 0 0;
+                }
 }
