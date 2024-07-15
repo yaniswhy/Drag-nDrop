@@ -135,7 +135,7 @@ img {
         grid-template-columns: 1fr 1fr; /* Two columns on tablet */
     }
     img {
-        width: 40%; /* Adjust width as needed */
+        width: 50%; /* Adjust width as needed */
     
     }
     .button-card {
