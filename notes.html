@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes</title>
+    <link rel="stylesheet" href="assets/styles/style-notes.css">
+    <link rel="icon" href="assets/Icons/SU.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <main>
+        <div class="notes-list">
+            <div class="notes-header">
+                <h2>All Notes</h2>
+                <button class="add-note-button-header" onclick="showAddNoteOverlay()">+ Add Note</button>
+            </div>
+            <div class="note-item" onclick="showNoteDetails('note1')">
+                <div class="note-icon"><img src="note-icon1.png" alt="Note Icon"></div>
+                <div class="note-summary">
+                    <h3 id="note1-title">Salsile project brief</h3>
+                    <p id="note1-content">Na, gailg an perfect let me show you images of the project...</p>
+                    <span class="note-date">16:00 08/10/2023</span>
+                </div>
+            </div>
+            <div class="note-item" onclick="showNoteDetails('note2')">
+                <div class="note-icon"><img src="note-icon2.png" alt="Note Icon"></div>
+                <div class="note-summary">
+                    <h3 id="note2-title">Design management</h3>
+                    <p id="note2-content">We have to manage all our design design projects...</p>
+                    <span class="note-date">14:30 08/10/2023</span>
+                </div>
+            </div>
+            <div class="note-item" onclick="showNoteDetails('note3')">
+                <div class="note-icon"><img src="note-icon3.png" alt="Note Icon"></div>
+                <div class="note-summary">
+                    <h3 id="note3-title">Daily task due</h3>
+                    <p id="note3-content">There’s some daily task we have to done...</p>
+                    <span class="note-date">12:00 08/10/2023</span>
+                </div>
+            </div>
+        </div>
+        <div class="note-details">
+            <div id="note1" class="note-detail">
+                <h2>Salsile Project Brief</h2>
+                <button class="edit-button" onclick="showEditNoteOverlay('note1')">Edit</button>
+                <button class="save-button" onclick="saveNoteDetails('note1')">Save</button>
+                <p>Salsile Inc. is a well-established fashion retailer specializing in high-quality clothing and accessories for men and women. The client is looking to revamp their existing e-commerce website to enhance user experience, improve overall aesthetics, and increase online sales. The new design should reflect their brand identity as a modern, and customer-centric fashion store.</p>
+            </div>
+            <div id="note2" class="note-detail">
+                <h2>Design Management</h2>
+                <button class="edit-button" onclick="showEditNoteOverlay('note2')">Edit</button>
+                <button class="save-button" onclick="saveNoteDetails('note2')">Save</button>
+                <p>We have to manage all our design projects to ensure timely delivery and high quality. This includes coordinating with different teams, setting up deadlines, and reviewing design drafts.</p>
+            </div>
+            <div id="note3" class="note-detail">
+                <h2>Daily Task Due</h2>
+                <button class="edit-button" onclick="showEditNoteOverlay('note3')">Edit</button>
+                <button class="save-button" onclick="saveNoteDetails('note3')">Save</button>
+                <p>There’s some daily task we have to done before the end of the day. Make sure to check your to-do list and prioritize accordingly.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Note Overlay -->
+    <div id="addNoteOverlay" class="overlay">
+        <div class="overlay-content">
+            <span class="close-button" onclick="closeAddNoteOverlay()">&times;</span>
+            <h2>Add New Note</h2>
+            <input type="text" id="newNoteTitle" placeholder="Note Title">
+            <textarea id="newNoteContent" placeholder="Enter note content"></textarea>
+            <button onclick="addNewNote()">Add Note</button>
+        </div>
+    </div>
+
+    <!-- Edit Note Overlay -->
+    <div id="editNoteOverlay" class="overlay">
+        <div class="overlay-content">
+            <span class="close-button" onclick="closeEditNoteOverlay()">&times;</span>
+            <h2>Edit Note</h2>
+            <input type="text" id="editNoteTitle" placeholder="Note Title">
+            <textarea id="editNoteContent" placeholder="Enter note content"></textarea>
+            <button onclick="editNote()">Save Changes</button>
+        </div>
+    </div>
+
+    <script src="scripts/notes.js"></script>
+</body>
+</html>
+
+
