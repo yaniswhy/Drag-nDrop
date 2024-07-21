@@ -1,51 +1,63 @@
-// Function to show the login overlay
-function showLoginOverlay() {
+// Import Firebase modules
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-auth.js";
+
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyBHKWt7qf49qav84TdTTglUU_dK-TfMYAk",
+  authDomain: "manager-613a6.firebaseapp.com",
+  projectId: "manager-613a6",
+  storageBucket: "manager-613a6.appspot.com",
+  messagingSenderId: "679450448153",
+  appId: "1:679450448153:web:b69f35a93d550162a57588"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+// Overlay functions
+function openLoginOverlay() {
   document.getElementById('loginOverlay').style.display = 'block';
 }
 
-// Function to hide the login overlay
-function hideLoginOverlay() {
+function closeLoginOverlay() {
   document.getElementById('loginOverlay').style.display = 'none';
 }
 
-// Check if enough time has passed since the last execution
-function canExecuteFunction() {
-  const lastExecution = localStorage.getItem('lastExecution');
-  const now = new Date().getTime();
-
-  if (lastExecution) {
-    const timePassed = now - lastExecution;
-    if (timePassed >= 300000) { // 5 minutes in milliseconds
-      return true;
-    } else {
-      return false;
-    }
-  } else {
-    return true;
-  }
+// Google sign-in function
+function signInWithGoogle(event) {
+  event.preventDefault();
+  signInWithRedirect(auth, provider);
 }
 
-// Function to handle the overlay click event
-function handleOverlayClick(event) {
-  if (event.target == document.getElementById('loginOverlay') && canExecuteFunction()) {
-    hideLoginOverlay();
-    localStorage.setItem('lastExecution', new Date().getTime());
-  }
+// Handle sign-in result
+function handleSignInResult() {
+  getRedirectResult(auth)
+    .then((result) => {
+      if (result.user) {
+        // User is signed in
+        closeLoginOverlay(); // Optionally close the overlay after successful sign-in
+        console.log("User signed in:", result.user);
+      }
+    })
+    .catch((error) => {
+      // Handle Errors here
+      console.error("Error signing in with Google:", error);
+    });
 }
 
-// Event listeners
-document.getElementById('loginBtn').addEventListener('click', showLoginOverlay);
+// Add event listeners
+document.addEventListener('DOMContentLoaded', () => {
+  handleSignInResult();
 
-document.getElementById('closeBtn').addEventListener('click', hideLoginOverlay);
+  // Event listeners for opening and closing the login overlay
+  document.getElementById('loginBtn').addEventListener('click', openLoginOverlay);
+  document.getElementById('closeBtn').addEventListener('click', closeLoginOverlay);
 
-document.getElementById('inv').addEventListener('click', hideLoginOverlay);
-document.getElementById('inv1').addEventListener('click', hideLoginOverlay);
+  // Event listener for Google sign-in
+  document.getElementById('googleLogin').addEventListener('click', signInWithGoogle);
+});
 
-window.addEventListener('click', handleOverlayClick);
 
-// Optionally, clear the localStorage entry after the delay has passed
-setInterval(() => {
-  if (canExecuteFunction()) {
-    localStorage.removeItem('lastExecution');
-  }
-}, 60000); // Check every minute
