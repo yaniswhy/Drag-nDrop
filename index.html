@@ -122,15 +122,28 @@
                 });
         }
 
+        function checkUserStatus() {
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            // User is signed in
+            document.getElementById('loginBtn').style.filter = 'grayscale(100%)'; // Apply gray filter
+        } else {
+            // User is not signed in
+            document.getElementById('loginBtn').style.filter = 'none'; // Remove gray filter
+        }
+    });
+}
         // Add event listeners
-        document.addEventListener('DOMContentLoaded', () => {
-            // Event listeners for opening and closing the login overlay
-            document.getElementById('loginBtn').addEventListener('click', openLoginOverlay);
-            document.getElementById('closeBtn').addEventListener('click', closeLoginOverlay);
+document.addEventListener('DOMContentLoaded', () => {
+    checkUserStatus(); // Check user status on page load
 
-            // Event listener for form submission
-            document.getElementById('loginForm').addEventListener('submit', loginWithEmailPassword);
-        });
+    // Event listeners for opening and closing the login overlay
+    document.getElementById('loginBtn').addEventListener('click', openLoginOverlay);
+    document.getElementById('closeBtn').addEventListener('click', closeLoginOverlay);
+
+    // Event listener for form submission
+    document.getElementById('loginForm').addEventListener('submit', loginWithEmailPassword);
+    });
     </script>
     <script src="scripts/auth.js"></script>
 </body>
