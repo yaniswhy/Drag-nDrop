@@ -24,7 +24,6 @@
                 <div class="error-message" id="errorMessage"></div>
                 <div class="button-group">
                     <button type="button" class="Invited" id="createAccountBtn">Create Account</button>
-                    <button type="button" class="Admin" id="resetPasswordBtn">Forgot Password</button>
                 </div>
             </form>
         </div>
@@ -118,56 +117,57 @@
     }
 
     function loginWithEmailPassword(event) {
-        event.preventDefault();
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
+    event.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
 
-        signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                const user = userCredential.user;
-                document.getElementById('loginBtn').style.filter = 'none';
-                document.getElementById('loginBtn').style.backgroundColor = '#f4d41c4b'; // Set to golden color
-                closeLoginOverlay();
-                showSuccessPopup("Connected successfully!");
-                localStorage.setItem('loggedIn', 'true');
-                saveUserData(user);
-            })
-            .catch((error) => {
-                const errorMessage = error.message;
-                document.getElementById('errorMessage').textContent = "Error: " + errorMessage;
-                showErrorPopup("Error: " + errorMessage);
-                console.error("Error signing in with email and password:", error);
-            });
-    }
+    signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+            const user = userCredential.user;
+            document.getElementById('loginBtn').style.filter = 'none';
+            document.getElementById('loginBtn').style.backgroundColor = '#1c3cf42a'; // Set to golden color
+            closeLoginOverlay();
+            showSuccessPopup("Connected successfully!");
+            localStorage.setItem('loggedIn', 'true');
+            saveUserData(user);
+        })
+        .catch((error) => {
+            const errorMessage = error.message;
+            document.getElementById('errorMessage').textContent = "Error: " + errorMessage;
+            showErrorPopup("Error: " + errorMessage);
+            console.error("Error signing in with email and password:", error);
+        });
+}
 
-    function createAccountWithEmailPassword(event) {
-        event.preventDefault();
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
+function createAccountWithEmailPassword(event) {
+    event.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
 
-        createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                const user = userCredential.user;
-                document.getElementById('loginBtn').style.filter = 'none';
-                document.getElementById('loginBtn').style.backgroundColor = '#f4d41c4b'; // Set to golden color
-                closeLoginOverlay();
-                showSuccessPopup("Account created successfully!");
-                localStorage.setItem('loggedIn', 'true');
-                saveUserData(user);
-            })
-            .catch((error) => {
-                const errorMessage = error.message;
-                document.getElementById('errorMessage').textContent = "Error: " + errorMessage;
-                showErrorPopup("Error: " + errorMessage);
-                console.error("Error creating account with email and password:", error);
-            });
-    }
+    createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+            const user = userCredential.user;
+            document.getElementById('loginBtn').style.filter = 'none';
+            document.getElementById('loginBtn').style.backgroundColor = '#1c3cf42a'; // Set to golden color
+            closeLoginOverlay();
+            showSuccessPopup("Account created successfully!");
+            localStorage.setItem('loggedIn', 'true');
+            saveUserData(user);
+        })
+        .catch((error) => {
+            const errorMessage = error.message;
+            document.getElementById('errorMessage').textContent = "Error: " + errorMessage;
+            showErrorPopup("Error: " + errorMessage);
+            console.error("Error creating account with email and password:", error);
+        });
+}
+
 
     function checkUserStatus() {
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById('loginBtn').style.filter = 'none';
-                document.getElementById('loginBtn').style.backgroundColor = '#f4d41c4b'; // Set to golden color
+                document.getElementById('loginBtn').style.backgroundColor = '#1c3cf42a'; // Set to golden color
                 closeLoginOverlay(); // Hide overlay if already logged in
             } else {
                 document.getElementById('loginBtn').style.filter = 'none';
@@ -177,16 +177,16 @@
     }
 
     function saveUserData(user) {
-        const userRef = doc(db, 'users', user.uid);
-        setDoc(userRef, {
-            email: user.email,
-            uid: user.uid
-        }).then(() => {
-            console.log("User data saved to Firestore.");
-        }).catch((error) => {
-            console.error("Error saving user data to Firestore:", error);
-        });
-    }
+    const userRef = doc(db, 'users', user.uid);
+    setDoc(userRef, {
+        email: user.email
+    }).then(() => {
+        console.log("User data saved to Firestore.");
+    }).catch((error) => {
+        console.error("Error saving user data to Firestore:", error);
+    });
+}
+
 
     document.addEventListener('DOMContentLoaded', () => {
         checkUserStatus();

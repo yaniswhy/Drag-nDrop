@@ -69,6 +69,18 @@ form button {
     max-width: 300px;
     margin-top: 20px;
 }
+form .Invited {
+    padding: 10px;
+    background-color: #18a444;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 300px;
+    margin-top: 20px;
+}
+
 /* CSS for the success popup */
 .popup {
     position: fixed;
