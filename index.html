@@ -126,7 +126,7 @@
             .then((userCredential) => {
                 const user = userCredential.user;
                 document.getElementById('loginBtn').style.filter = 'none';
-                document.getElementById('loginBtn').style.backgroundColor = '#f4d41c'; // Set to golden color
+                document.getElementById('loginBtn').style.backgroundColor = '#f4d41c4b'; // Set to golden color
                 closeLoginOverlay();
                 showSuccessPopup("Connected successfully!");
                 localStorage.setItem('loggedIn', 'true');
@@ -149,7 +149,7 @@
             .then((userCredential) => {
                 const user = userCredential.user;
                 document.getElementById('loginBtn').style.filter = 'none';
-                document.getElementById('loginBtn').style.backgroundColor = '#f4d41c'; // Set to golden color
+                document.getElementById('loginBtn').style.backgroundColor = '#f4d41c4b'; // Set to golden color
                 closeLoginOverlay();
                 showSuccessPopup("Account created successfully!");
                 localStorage.setItem('loggedIn', 'true');
@@ -167,7 +167,7 @@
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById('loginBtn').style.filter = 'none';
-                document.getElementById('loginBtn').style.backgroundColor = '#f4d41c'; // Set to golden color
+                document.getElementById('loginBtn').style.backgroundColor = '#f4d41c4b'; // Set to golden color
                 closeLoginOverlay(); // Hide overlay if already logged in
             } else {
                 document.getElementById('loginBtn').style.filter = 'none';
