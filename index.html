@@ -71,7 +71,6 @@
             <!-- Add more cards here linking to different websites of Sorbonne Université -->
         </section>
     </main>
-
 <script type="module">
 // Import Firebase modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-app.js";
@@ -127,7 +126,7 @@ function loginWithEmailPassword(event) {
             // User signed in successfully
             const user = userCredential.user;
             document.getElementById('loginBtn').style.filter = 'none'; // Remove gray filter
-            document.getElementById('loginBtn').style.backgroundColor = '#FFD700'; // Set to golden color
+            document.getElementById('loginBtn').style.backgroundColor = '#f4d41c4b'; // Set to golden color
             closeLoginOverlay(); // Close the overlay
             showSuccessPopup("Connected successfully!");
             console.log("User signed in:", user);
