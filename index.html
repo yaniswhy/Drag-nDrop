@@ -8,24 +8,23 @@
     <link rel="stylesheet" href="assets/styles/style-auth.css">
     <link rel="icon" type="image/png" href="assets/Icons/SU.png">
     <!-- Add this inside the <head> tag of your HTML -->
-<script src="https://www.gstatic.com/firebasejs/9.6.9/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.9/firebase-auth.js"></script>
-
+    <script src="https://www.gstatic.com/firebasejs/9.6.9/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.9/firebase-auth.js"></script>
 </head>
 <body>
     <img id="loginBtn" src="assets/Icons/login.png">
 
-
     <div id="loginOverlay" class="overlay">
         <div class="overlay-content">
-            <span class="close-btn" id="closeBtn">&times;</span>       
+            <span class="close-btn" id="closeBtn">&times;</span>
             <form>
                 <div class="google-login">
-                    <button id="googleLogin" onclick="signInWithGoogle()">Sign in with Google</button>
-                </div>        
+                    <button id="googleLogin">Sign in with Google</button>
+                </div>
             </form>
         </div>
     </div>
+
     <img class="myLOGO" src="assets/Signatures/Signature.png" onclick="window.location.href='https://www.instagram.com/_yanns__/'">
     <header>
         <img src="assets/Icons/SU.png" alt="Sorbonne Université Logo" class="logo">
@@ -50,7 +49,7 @@
                 <h2>Aide</h2>
             </div>
         </section>
-       
+
         <section class="links-section">
             <div class="link-card" onclick="window.location.href='https://www.sorbonne-universite.fr/'">
                 <img src="assets/Icons/SUbtn.png">
@@ -60,13 +59,92 @@
                 <img src="assets/Icons/comments.png">
                 <h2>Messagerie</h2>
             </div>
-            <div class="link-card" onclick="window.location.href='https://buresa.sorbonne-universite.fr/ReservationSalles//'">
+            <div class="link-card" onclick="window.location.href='https://buresa.sorbonne-universite.fr/ReservationSalles/'">
                 <img src="assets/Icons/digital-library.png">
                 <h2>Bibliothèque</h2>
             </div>
             <!-- Add more cards here linking to different websites of Sorbonne Université -->
         </section>
     </main>
-<script type="module" src="scripts/auth.js"></script>
+
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-auth.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBHKWt7qf49qav84TdTTglUU_dK-TfMYAk",
+            authDomain: "manager-613a6.firebaseapp.com",
+            projectId: "manager-613a6",
+            storageBucket: "manager-613a6.appspot.com",
+            messagingSenderId: "679450448153",
+            appId: "1:679450448153:web:b69f35a93d550162a57588"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        // Overlay functions
+        function openLoginOverlay() {
+            document.getElementById('loginOverlay').style.display = 'block';
+        }
+
+        function closeLoginOverlay() {
+            document.getElementById('loginOverlay').style.display = 'none';
+        }
+
+        // Google sign-in function
+        function signInWithGoogle(event) {
+            event.preventDefault();
+            signInWithRedirect(auth, provider);
+        }
+
+        // Handle sign-in result
+        function handleSignInResult() {
+            getRedirectResult(auth)
+                .then((result) => {
+                    if (result.user) {
+                        // User is signed in
+                        closeLoginOverlay(); // Optionally close the overlay after successful sign-in
+                        console.log("User signed in:", result.user);
+                    }
+                })
+                .catch((error) => {
+                    // Handle Errors here
+                    console.error("Error signing in with Google:", error);
+                });
+        }
+
+        // Check auth state on page load
+        function checkAuthState() {
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    // User is signed in
+                    console.log("User is already signed in:", user);
+                    closeLoginOverlay(); // Optionally close the overlay if the user is already signed in
+                } else {
+                    // No user is signed in
+                    console.log("No user is signed in");
+                }
+            });
+        }
+
+        // Add event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuthState();
+            handleSignInResult();
+
+            // Event listeners for opening and closing the login overlay
+            document.getElementById('loginBtn').addEventListener('click', openLoginOverlay);
+            document.getElementById('closeBtn').addEventListener('click', closeLoginOverlay);
+
+            // Event listener for Google sign-in
+            document.getElementById('googleLogin').addEventListener('click', signInWithGoogle);
+        });
+    </script>
 </body>
 </html>
+
