@@ -96,9 +96,9 @@
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
 
     <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
-import { getFirestore, doc, setDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -115,102 +115,294 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-document.addEventListener('DOMContentLoaded', () => {
-    const addTaskBtn = document.getElementById('add-task-btn');
-    const taskModal = document.getElementById('task-modal');
-    const closeBtn = document.querySelector('.close-btn');
-    const addTaskModalBtn = document.getElementById('add-task-modal-btn');
-    const taskNameInput = document.getElementById('task-name');
-    const taskPlaceInput = document.getElementById('task-place');
-    const taskTimeInput = document.getElementById('task-time');
-    const taskColorInput = document.getElementById('task-color');
+// DOM Elements
+const tasksContainer = document.querySelector('.tasks');
+const openModalBtn = document.getElementById('add-task-btn');
+const toggleSidebarBtn = document.getElementById('toggle-sidebar-btn');
+const modal = document.getElementById('task-modal');
+const closeBtn = document.querySelector('.close-btn');
+const addTaskModalBtn = document.getElementById('add-task-modal-btn');
+const taskNameInput = document.getElementById('task-name');
+const taskPlaceInput = document.getElementById('task-place');
+const taskTimeInput = document.getElementById('task-time');
+const taskColorInput = document.getElementById('task-color');
+const editModal = document.getElementById('edit-task-modal');
+const editCloseBtn = document.querySelector('.edit-close-btn');
+const editTaskModalBtn = document.getElementById('edit-task-modal-btn');
+const editTaskNameInput = document.getElementById('edit-task-name');
+const editTaskPlaceInput = document.getElementById('edit-task-place');
+const editTaskTimeInput = document.getElementById('edit-task-time');
+const editTaskColorInput = document.getElementById('edit-task-color');
+const printScheduleBtn = document.getElementById('print-schedule-btn');
+const loginBtn = document.getElementById('login-btn');
+const logoutBtn = document.getElementById('logout-btn');
+const toggleDarkModeBtn = document.getElementById('toggle-dark-mode-btn');
 
-    addTaskBtn.addEventListener('click', () => {
-        taskModal.style.display = 'flex';
-    });
+// Variables
+let currentTaskId = null;
+let isDarkMode = false;
 
-    closeBtn.addEventListener('click', () => {
-        taskModal.style.display = 'none';
-    });
-
-    addTaskModalBtn.addEventListener('click', async () => {
-        const name = taskNameInput.value;
-        const place = taskPlaceInput.value;
-        const time = taskTimeInput.value;
-        const color = taskColorInput.value;
-
-        if (name && place && time) {
-            const taskId = Date.now().toString();
-            const task = { name, place, time, color };
-
-            try {
-                await setDoc(doc(db, 'tasks', taskId), task);
-                addTaskToDOM(task, taskId);
-                taskModal.style.display = 'none';
-                taskNameInput.value = '';
-                taskPlaceInput.value = '';
-                taskTimeInput.value = '';
-                taskColorInput.value = '#456C86';
-            } catch (error) {
-                console.error('Error adding document: ', error);
-            }
-        } else {
-            alert('Please fill in all fields');
-        }
-    });
-
-    function addTaskToDOM(task, taskId) {
-        const taskDiv = document.createElement('div');
-        taskDiv.className = 'task';
-        taskDiv.id = taskId;
-        taskDiv.style.backgroundColor = task.color;
-        taskDiv.innerHTML = `
-            <div class="task-name">${task.name}</div>
-            <div class="task-place">${task.place}</div>
-            <div class="task-time">${task.time}</div>
-        `;
-        document.getElementById('sidebar').appendChild(taskDiv);
-
-        // Make the task draggable
-        taskDiv.draggable = true;
-        taskDiv.addEventListener('dragstart', (e) => {
-            e.dataTransfer.setData('text/plain', taskId);
-        });
-    }
-
-    document.querySelectorAll('.day').forEach(day => {
-        day.addEventListener('dragover', (e) => {
-            e.preventDefault();
-        });
-
-        day.addEventListener('drop', async (e) => {
-            e.preventDefault();
-            const taskId = e.dataTransfer.getData('text/plain');
-            const taskElement = document.getElementById(taskId);
-            if (taskElement) {
-                const dayId = e.target.id;
-                taskElement.remove();
-                const task = await getTaskFromDB(taskId);
-                const updatedTask = { ...task, dayId };
-                await setDoc(doc(db, 'tasks', taskId), updatedTask);
-                e.target.appendChild(taskElement);
-            }
-        });
-    });
-
-    async function getTaskFromDB(taskId) {
-        const taskDoc = await doc(db, 'tasks', taskId).get();
-        return taskDoc.data();
-    }
-
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            console.log('User logged in:', user);
-        } else {
-            console.log('No user logged in');
+// Event Listeners
+document.addEventListener('DOMContentLoaded', function() {
+    initializeDragAndDrop();
+    loadTasks();
+    setupAuthListeners();
+    setupDarkMode();
+    printScheduleBtn.addEventListener('click', printSchedule);
+    openModalBtn.addEventListener('click', openModal);
+    closeBtn.addEventListener('click', closeModal);
+    addTaskModalBtn.addEventListener('click', addTask);
+    editCloseBtn.addEventListener('click', closeEditModal);
+    editTaskModalBtn.addEventListener('click', editTask);
+    toggleSidebarBtn.addEventListener('click', () => document.body.classList.toggle('sidebar-active'));
+    loginBtn.addEventListener('click', loginWithGoogle);
+    logoutBtn.addEventListener('click', logout);
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal();
+        } else if (e.target === editModal) {
+            closeEditModal();
         }
     });
 });
+
+function setupDarkMode() {
+    toggleDarkModeBtn.addEventListener('click', () => {
+        isDarkMode = !isDarkMode;
+        document.body.classList.toggle('dark-mode', isDarkMode);
+        toggleDarkModeBtn.style.color = isDarkMode ? '#fff' : '#000'; // Adjust button color
+    });
+}
+
+function printSchedule() {
+    // Hide the task bar and overlays before printing
+    tasksContainer.style.display = 'none';
+    modal.style.display = 'none';
+    editModal.style.display = 'none';
+    // Print the schedule
+    window.print();
+    // Show the task bar and overlays after printing
+    tasksContainer.style.display = '';
+    modal.style.display = '';
+    editModal.style.display = '';
+}
+
+function initializeDragAndDrop() {
+    const tasks = document.querySelectorAll('.task');
+    tasks.forEach(task => {
+        task.addEventListener('dragstart', dragStart);
+        task.addEventListener('dragend', dragEnd);
+        task.addEventListener('dblclick', openEditModal);
+    });
+    const days = document.querySelectorAll('.day');
+    days.forEach(day => {
+        day.addEventListener('dragover', dragOver);
+        day.addEventListener('dragenter', dragEnter);
+        day.addEventListener('dragleave', dragLeave);
+        day.addEventListener('drop', drop);
+    });
+    const deleteButtons = document.querySelectorAll('.delete-btn');
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', deleteTask);
+    });
+}
+
+function dragStart(e) {
+    e.dataTransfer.setData('text/plain', e.target.id);
+    e.dataTransfer.effectAllowed = 'move'; // Specify the operation allowed (move)
+    setTimeout(() => {
+        e.target.classList.add('hide');
+    }, 0);
+}
+
+function dragEnd(e) {
+    e.target.classList.remove('hide');
+}
+
+function dragOver(e) {
+    e.preventDefault();
+}
+
+function dragEnter(e) {
+    e.preventDefault();
+    e.target.classList.add('hovered');
+}
+
+function dragLeave(e) {
+    e.target.classList.remove('hovered');
+}
+
+function drop(e) {
+    e.preventDefault();
+    e.target.classList.remove('hovered');
+    const id = e.dataTransfer.getData('text/plain');
+    const draggable = document.getElementById(id);
+    
+    if (draggable.parentElement === e.target) {
+        return;
+    }
+    
+    if (draggable.parentElement === tasksContainer) {
+        const clone = draggable.cloneNode(true);
+        clone.id = `task-${new Date().getTime()}`;
+        initializeTask(clone);
+        e.target.appendChild(clone);
+    } else {
+        draggable.parentElement.removeChild(draggable);
+        e.target.appendChild(draggable);
+    }
+}
+
+function openModal() {
+    modal.style.display = 'block';
+}
+
+function closeModal() {
+    modal.style.display = 'none';
+}
+
+function openEditModal(e) {
+    currentTaskId = e.target.id;
+    const task = document.getElementById(currentTaskId);
+    editTaskNameInput.value = task.childNodes[0].nodeValue.trim();
+    editTaskPlaceInput.value = task.querySelector('.place').textContent;
+    editTaskTimeInput.value = task.querySelector('.time').textContent;
+    editTaskColorInput.value = rgbToHex(task.style.backgroundColor); // Convert RGB to hex
+    editModal.style.display = 'block';
+}
+
+function closeEditModal() {
+    editModal.style.display = 'none';
+}
+
+async function addTask() {
+    const taskName = taskNameInput.value.trim();
+    const taskPlace = taskPlaceInput.value.trim();
+    const taskTime = taskTimeInput.value;
+    const taskColor = taskColorInput.value;
+    
+    if (taskName === '' || taskPlace === '' || taskTime === '') return;
+
+    const taskId = `task-${Date.now()}`;
+    const newTask = document.createElement('div');
+    newTask.classList.add('task');
+    newTask.setAttribute('draggable', 'true');
+    newTask.setAttribute('id', taskId);
+    newTask.style.backgroundColor = taskColor;
+    newTask.innerHTML = `${taskName} <span class="place">${taskPlace}</span><span class="time">${taskTime}</span><button class="delete-btn">x</button>`;
+    tasksContainer.appendChild(newTask);
+    closeModal();
+
+    taskNameInput.value = '';
+    taskPlaceInput.value = '';
+    taskTimeInput.value = '';
+    taskColorInput.value = '#456C86';
+
+    initializeTask(newTask);
+
+    try {
+        await setDoc(doc(db, 'tasks', taskId), { name: taskName, place: taskPlace, time: taskTime, color: taskColor });
+    } catch (error) {
+        console.error('Error adding document: ', error);
+    }
+}
+
+async function editTask() {
+    const taskName = editTaskNameInput.value.trim();
+    const taskPlace = editTaskPlaceInput.value.trim();
+    const taskTime = editTaskTimeInput.value;
+    const taskColor = editTaskColorInput.value;
+
+    if (taskName === '' || taskPlace === '' || taskTime === '') return;
+
+    const task = document.getElementById(currentTaskId);
+    task.style.backgroundColor = taskColor;
+    task.innerHTML = `${taskName} <span class="place">${taskPlace}</span><span class="time">${taskTime}</span><button class="delete-btn">x</button>`;
+    initializeTask(task);
+    closeEditModal();
+
+    try {
+        await setDoc(doc(db, 'tasks', currentTaskId), { name: taskName, place: taskPlace, time: taskTime, color: taskColor });
+    } catch (error) {
+        console.error('Error updating document: ', error);
+    }
+}
+
+function deleteTask(e) {
+    const task = e.target.parentElement;
+    const taskId = task.id;
+    task.remove();
+    
+    try {
+        // Delete the task from Firestore
+        const taskDocRef = doc(db, 'tasks', taskId);
+        taskDocRef.delete();
+    } catch (error) {
+        console.error('Error deleting document: ', error);
+    }
+}
+
+async function loadTasks() {
+    const tasksCollection = collection(db, 'tasks');
+    const taskSnapshot = await getDocs(tasksCollection);
+    
+    taskSnapshot.forEach(doc => {
+        const taskData = doc.data();
+        const taskId = doc.id;
+        const taskElement = document.createElement('div');
+        taskElement.classList.add('task');
+        taskElement.setAttribute('draggable', 'true');
+        taskElement.setAttribute('id', taskId);
+        taskElement.style.backgroundColor = taskData.color;
+        taskElement.innerHTML = `${taskData.name} <span class="place">${taskData.place}</span><span class="time">${taskData.time}</span><button class="delete-btn">x</button>`;
+        tasksContainer.appendChild(taskElement);
+        initializeTask(taskElement);
+    });
+}
+
+function initializeTask(task) {
+    task.addEventListener('dragstart', dragStart);
+    task.addEventListener('dragend', dragEnd);
+    task.addEventListener('dblclick', openEditModal);
+    const deleteButton = task.querySelector('.delete-btn');
+    deleteButton.addEventListener('click', deleteTask);
+}
+
+function rgbToHex(rgb) {
+    const rgbArray = rgb.match(/\d+/g);
+    return `#${((1 << 24) + (parseInt(rgbArray[0]) << 16) + (parseInt(rgbArray[1]) << 8) + parseInt(rgbArray[2])).toString(16).slice(1).toUpperCase()}`;
+}
+
+function setupAuthListeners() {
+    onAuthStateChanged(auth, user => {
+        if (user) {
+            // User is signed in
+            loginBtn.style.display = 'none';
+            logoutBtn.style.display = 'block';
+        } else {
+            // No user is signed in
+            loginBtn.style.display = 'block';
+            logoutBtn.style.display = 'none';
+        }
+    });
+}
+
+async function loginWithGoogle() {
+    const provider = new GoogleAuthProvider();
+    try {
+        await signInWithPopup(auth, provider);
+    } catch (error) {
+        console.error('Error signing in with Google: ', error);
+    }
+}
+
+async function logout() {
+    try {
+        await signOut(auth);
+    } catch (error) {
+        console.error('Error signing out: ', error);
+    }
+}
 
     </script>
 </body>
