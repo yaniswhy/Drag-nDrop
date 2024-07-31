@@ -99,7 +99,27 @@
 </div>
 
 <script src="https://kit.fontawesome.com/a076d05399.js"></script>
-<script type="module" src="scripts/script-dragndrop.js"></script>
+<script src="scripts/script-dragndrop.js"></script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc, collection, getDocs, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-auth.js";
+
+
+// Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyBHKWt7qf49qav84TdTTglUU_dK-TfMYAk",
+    authDomain: "manager-613a6.firebaseapp.com",
+    projectId: "manager-613a6",
+    storageBucket: "manager-613a6.appspot.com",
+    messagingSenderId: "679450448153",
+    appId: "1:679450448153:web:b69f35a93d550162a57588"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+</script>
 </body>
 </html>
 
