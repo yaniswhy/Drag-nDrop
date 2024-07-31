@@ -69,9 +69,10 @@ form button {
     max-width: 300px;
     margin-top: 20px;
 }
-/* CSS for golden color effect */
+/* CSS for golden color effect 
+*/
 .golden-effect {
-    filter: brightness(1.2) sepia(1) hue-rotate(30deg);
+    filter: brightness(1.2) sepia(0.8) hue-rotate(45deg);
 }
 
 form .Invited {
