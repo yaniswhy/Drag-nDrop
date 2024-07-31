@@ -69,6 +69,11 @@ form button {
     max-width: 300px;
     margin-top: 20px;
 }
+/* CSS for golden color effect */
+.golden-effect {
+    filter: brightness(1.2) sepia(1) hue-rotate(30deg);
+}
+
 form .Invited {
     padding: 10px;
     background-color: #18a444;
@@ -104,6 +109,7 @@ form .Invited {
 /* Buttons Layout */
 .button-group {
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
     width: 100%;
     max-width: 300px;

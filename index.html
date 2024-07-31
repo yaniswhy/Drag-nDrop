@@ -20,9 +20,10 @@
             <form id="loginForm">
                 <input type="email" id="email" placeholder="Email" required>
                 <input type="password" id="password" placeholder="Password" required>
-                <button type="submit">Log In</button>
+                
                 <div class="error-message" id="errorMessage"></div>
                 <div class="button-group">
+                    <button type="submit">Login</button>
                     <button type="button" class="Invited" id="createAccountBtn">Create Account</button>
                 </div>
             </form>
@@ -72,51 +73,56 @@
     </main>
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-auth.js";
-    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-auth.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-firestore.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyBHKWt7qf49qav84TdTTglUU_dK-TfMYAk",
-        authDomain: "manager-613a6.firebaseapp.com",
-        projectId: "manager-613a6",
-        storageBucket: "manager-613a6.appspot.com",
-        messagingSenderId: "679450448153",
-        appId: "1:679450448153:web:b69f35a93d550162a57588"
-    };
+// Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyBHKWt7qf49qav84TdTTglUU_dK-TfMYAk",
+    authDomain: "manager-613a6.firebaseapp.com",
+    projectId: "manager-613a6",
+    storageBucket: "manager-613a6.appspot.com",
+    messagingSenderId: "679450448153",
+    appId: "1:679450448153:web:b69f35a93d550162a57588"
+};
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-    function openLoginOverlay() {
-        document.getElementById('loginOverlay').style.display = 'block';
-    }
+// Overlay functions
+function openLoginOverlay() {
+    document.getElementById('loginOverlay').style.display = 'block';
+}
 
-    function closeLoginOverlay() {
-        document.getElementById('loginOverlay').style.display = 'none';
-    }
+function closeLoginOverlay() {
+    document.getElementById('loginOverlay').style.display = 'none';
+}
 
-    function showSuccessPopup(message) {
-        const popup = document.createElement('div');
-        popup.className = 'popup';
-        popup.textContent = message;
-        document.body.appendChild(popup);
-        setTimeout(() => {
-            popup.remove();
-        }, 3000);
-    }
+// Popup functions
+function showSuccessPopup(message) {
+    const popup = document.createElement('div');
+    popup.className = 'popup';
+    popup.textContent = message;
+    document.body.appendChild(popup);
+    setTimeout(() => {
+        popup.remove();
+    }, 3000);
+}
 
-    function showErrorPopup(message) {
-        const popup = document.createElement('div');
-        popup.className = 'popup error';
-        popup.textContent = message;
-        document.body.appendChild(popup);
-        setTimeout(() => {
-            popup.remove();
-        }, 3000);
-    }
+function showErrorPopup(message) {
+    const popup = document.createElement('div');
+    popup.className = 'popup error';
+    popup.textContent = message;
+    document.body.appendChild(popup);
+    setTimeout(() => {
+        popup.remove();
+    }, 3000);
+}
 
-    function loginWithEmailPassword(event) {
+// Login function
+function loginWithEmailPassword(event) {
     event.preventDefault();
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
@@ -124,12 +130,11 @@
     signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
             const user = userCredential.user;
-            document.getElementById('loginBtn').style.filter = 'none';
-            document.getElementById('loginBtn').style.backgroundColor = '#1c3cf42a'; // Set to golden color
+            document.getElementById('loginBtn').classList.add('golden-effect'); // Apply golden color effect
             closeLoginOverlay();
             showSuccessPopup("Connected successfully!");
-            localStorage.setItem('loggedIn', 'true');
-            saveUserData(user);
+            localStorage.setItem('loggedIn', 'true'); // Store login status
+            saveUserData(user); // Save user data to Firestore
         })
         .catch((error) => {
             const errorMessage = error.message;
@@ -139,6 +144,7 @@
         });
 }
 
+// Create account function
 function createAccountWithEmailPassword(event) {
     event.preventDefault();
     const email = document.getElementById('email').value;
@@ -147,12 +153,11 @@ function createAccountWithEmailPassword(event) {
     createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
             const user = userCredential.user;
-            document.getElementById('loginBtn').style.filter = 'none';
-            document.getElementById('loginBtn').style.backgroundColor = '#1c3cf42a'; // Set to golden color
+            document.getElementById('loginBtn').classList.add('golden-effect'); // Apply golden color effect
             closeLoginOverlay();
             showSuccessPopup("Account created successfully!");
-            localStorage.setItem('loggedIn', 'true');
-            saveUserData(user);
+            localStorage.setItem('loggedIn', 'true'); // Store login status
+            saveUserData(user); // Save user data to Firestore
         })
         .catch((error) => {
             const errorMessage = error.message;
@@ -162,46 +167,48 @@ function createAccountWithEmailPassword(event) {
         });
 }
 
+// Check user status
+function checkUserStatus() {
+    onAuthStateChanged(auth, (user) => {
+        const loginBtn = document.getElementById('loginBtn');
+        if (user) {
+            loginBtn.classList.add('golden-effect'); // Apply golden color effect
+            closeLoginOverlay(); // Hide overlay if already logged in
+        } else {
+            loginBtn.classList.remove('golden-effect'); // Remove golden color effect
+        }
+    });
+}
 
-    function checkUserStatus() {
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                document.getElementById('loginBtn').style.filter = 'none';
-                document.getElementById('loginBtn').style.backgroundColor = '#1c3cf42a'; // Set to golden color
-                closeLoginOverlay(); // Hide overlay if already logged in
-            } else {
-                document.getElementById('loginBtn').style.filter = 'none';
-                document.getElementById('loginBtn').style.backgroundColor = ''; // Remove any background color
-            }
-        });
-    }
-
-    function saveUserData(user) {
+// Save user data to Firestore
+function saveUserData(user) {
     const userRef = doc(db, 'users', user.uid);
     setDoc(userRef, {
         email: user.email
-    }).then(() => {
+    })
+    .then(() => {
         console.log("User data saved to Firestore.");
-    }).catch((error) => {
+    })
+    .catch((error) => {
         console.error("Error saving user data to Firestore:", error);
     });
 }
 
+// Event listeners
+document.addEventListener('DOMContentLoaded', () => {
+    checkUserStatus(); // Check user status on page load
 
-    document.addEventListener('DOMContentLoaded', () => {
-        checkUserStatus();
+    document.getElementById('loginBtn').addEventListener('click', openLoginOverlay);
+    document.getElementById('closeBtn').addEventListener('click', closeLoginOverlay);
 
-        document.getElementById('loginBtn').addEventListener('click', openLoginOverlay);
-        document.getElementById('closeBtn').addEventListener('click', closeLoginOverlay);
+    document.getElementById('loginForm').addEventListener('submit', loginWithEmailPassword);
+    document.getElementById('createAccountBtn').addEventListener('click', createAccountWithEmailPassword);
 
-        document.getElementById('loginForm').addEventListener('submit', loginWithEmailPassword);
+    if (localStorage.getItem('loggedIn') === 'true') {
+        closeLoginOverlay(); // Close overlay if already logged in
+    }
+});
 
-        document.getElementById('createAccountBtn').addEventListener('click', createAccountWithEmailPassword);
-
-        if (localStorage.getItem('loggedIn') === 'true') {
-            closeLoginOverlay();
-        }
-    });
     </script>
     <script src="scripts/auth.js"></script>
 </body>
