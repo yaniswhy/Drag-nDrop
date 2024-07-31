@@ -244,7 +244,7 @@ function drop(e) {
     
     if (draggable.parentElement === tasksContainer) {
         const clone = draggable.cloneNode(true);
-        clone.id = `task-${new Date().getTime()}`;
+        clone.id = `task-${Date.now()}`;
         initializeTask(clone);
         e.target.appendChild(clone);
     } else {
@@ -334,7 +334,6 @@ function deleteTask(e) {
     task.remove();
     
     try {
-        // Delete the task from Firestore
         const taskDocRef = doc(db, 'tasks', taskId);
         taskDocRef.delete();
     } catch (error) {
@@ -376,11 +375,9 @@ function rgbToHex(rgb) {
 function setupAuthListeners() {
     onAuthStateChanged(auth, user => {
         if (user) {
-            // User is signed in
             loginBtn.style.display = 'none';
             logoutBtn.style.display = 'block';
         } else {
-            // No user is signed in
             loginBtn.style.display = 'block';
             logoutBtn.style.display = 'none';
         }
