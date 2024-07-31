@@ -73,7 +73,7 @@
     </main>
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-auth.js";
     import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -107,6 +107,16 @@
         }, 3000);
     }
 
+    function showErrorPopup(message) {
+        const popup = document.createElement('div');
+        popup.className = 'popup error';
+        popup.textContent = message;
+        document.body.appendChild(popup);
+        setTimeout(() => {
+            popup.remove();
+        }, 3000);
+    }
+
     function loginWithEmailPassword(event) {
         event.preventDefault();
         const email = document.getElementById('email').value;
@@ -114,33 +124,53 @@
 
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                // User signed in successfully
                 const user = userCredential.user;
-                document.getElementById('loginBtn').style.filter = 'none'; // Remove gray filter
-                document.getElementById('loginBtn').style.backgroundColor = '#f4d41c4b'; // Set to golden color
-                closeLoginOverlay(); // Close the overlay
+                document.getElementById('loginBtn').style.filter = 'none';
+                document.getElementById('loginBtn').style.backgroundColor = '#f4d41c'; // Set to golden color
+                closeLoginOverlay();
                 showSuccessPopup("Connected successfully!");
-                console.log("User signed in:", user);
-                localStorage.setItem('loggedIn', 'true'); // Store login status
-                saveUserData(user); // Save user data to Firestore
+                localStorage.setItem('loggedIn', 'true');
+                saveUserData(user);
             })
             .catch((error) => {
-                // Handle Errors here
                 const errorMessage = error.message;
                 document.getElementById('errorMessage').textContent = "Error: " + errorMessage;
+                showErrorPopup("Error: " + errorMessage);
                 console.error("Error signing in with email and password:", error);
+            });
+    }
+
+    function createAccountWithEmailPassword(event) {
+        event.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                document.getElementById('loginBtn').style.filter = 'none';
+                document.getElementById('loginBtn').style.backgroundColor = '#f4d41c'; // Set to golden color
+                closeLoginOverlay();
+                showSuccessPopup("Account created successfully!");
+                localStorage.setItem('loggedIn', 'true');
+                saveUserData(user);
+            })
+            .catch((error) => {
+                const errorMessage = error.message;
+                document.getElementById('errorMessage').textContent = "Error: " + errorMessage;
+                showErrorPopup("Error: " + errorMessage);
+                console.error("Error creating account with email and password:", error);
             });
     }
 
     function checkUserStatus() {
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // User is signed in
-                document.getElementById('loginBtn').style.filter = 'none'; // Remove gray filter
-                document.getElementById('loginBtn').style.backgroundColor = '#f4d41c4b'; // Set to golden color
+                document.getElementById('loginBtn').style.filter = 'none';
+                document.getElementById('loginBtn').style.backgroundColor = '#f4d41c'; // Set to golden color
+                closeLoginOverlay(); // Hide overlay if already logged in
             } else {
-                // User is not signed in
-                document.getElementById('loginBtn').style.filter = 'none'; // No special color
+                document.getElementById('loginBtn').style.filter = 'none';
                 document.getElementById('loginBtn').style.backgroundColor = ''; // Remove any background color
             }
         });
@@ -159,22 +189,19 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        // Check user status on page load
         checkUserStatus();
 
-        // Event listeners for opening and closing the login overlay
         document.getElementById('loginBtn').addEventListener('click', openLoginOverlay);
         document.getElementById('closeBtn').addEventListener('click', closeLoginOverlay);
 
-        // Event listener for form submission
         document.getElementById('loginForm').addEventListener('submit', loginWithEmailPassword);
 
-        // Hide overlay if already logged in
+        document.getElementById('createAccountBtn').addEventListener('click', createAccountWithEmailPassword);
+
         if (localStorage.getItem('loggedIn') === 'true') {
             closeLoginOverlay();
         }
     });
-
     </script>
     <script src="scripts/auth.js"></script>
 </body>
