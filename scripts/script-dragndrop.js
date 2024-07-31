@@ -1,6 +1,21 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc, collection, getDocs, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-auth.js";
 
+// Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyBHKWt7qf49qav84TdTTglUU_dK-TfMYAk",
+    authDomain: "manager-613a6.firebaseapp.com",
+    projectId: "manager-613a6",
+    storageBucket: "manager-613a6.appspot.com",
+    messagingSenderId: "679450448153",
+    appId: "1:679450448153:web:b69f35a93d550162a57588"
+};
 
-// Task-related elements
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 const tasksContainer = document.querySelector('.tasks');
 const openModalBtn = document.getElementById('add-task-btn');
 const toggleSidebarBtn = document.getElementById('toggle-sidebar-btn');
@@ -19,33 +34,156 @@ const editTaskPlaceInput = document.getElementById('edit-task-place');
 const editTaskTimeInput = document.getElementById('edit-task-time');
 const editTaskColorInput = document.getElementById('edit-task-color');
 
-// Function to save task to Firestore
-async function saveTaskToFirestore(taskId, taskData) {
-    try {
-        const taskRef = doc(db, 'tasks', taskId);
-        await setDoc(taskRef, taskData);
-        console.log("Task saved to Firestore.");
-    } catch (error) {
-        console.error("Error saving task to Firestore:", error);
+let currentTaskId = null;
+const days = document.querySelectorAll('.day');
+async function initializeWeeksCollection() {
+    const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+    
+    for (const day of daysOfWeek) {
+        const docRef = doc(db, 'weeks', day);
+        const docSnap = await getDoc(docRef);
+        if (!docSnap.exists()) {
+            await setDoc(docRef, { tasks: {} });
+            console.log(`Document for ${day} created.`);
+        } else {
+            console.log(`Document for ${day} already exists.`);
+        }
     }
 }
 
-// Function to fetch tasks from Firestore
-async function fetchTasksFromFirestore() {
-    try {
-        const tasksCollection = collection(db, 'tasks');
-        const tasksSnapshot = await getDocs(tasksCollection);
-        tasksSnapshot.forEach(doc => {
-            const taskData = doc.data();
-            createTaskElement(doc.id, taskData);
+// Event Listener for DOMContentLoaded
+document.addEventListener('DOMContentLoaded', () => {
+    initializeWeeksCollection()
+        .then(() => {
+            console.log('Weeks collection initialized.');
+            // Continue with fetching tasks or any other setup
+        })
+        .catch(error => {
+            console.error('Error initializing weeks collection:', error);
         });
-        initializeDragAndDrop();
+});
+// Initialize tasks from Firestore
+async function fetchTasksFromFirestore(day) {
+    try {
+        const docRef = doc(db, 'weeks', day);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            const tasks = docSnap.data().tasks || [];
+            tasks.forEach(task => {
+                const newTask = document.createElement('div');
+                newTask.classList.add('task');
+                newTask.setAttribute('draggable', 'true');
+                newTask.setAttribute('id', task.id);
+                newTask.style.backgroundColor = task.color;
+                newTask.innerHTML = `${task.name} <span class="place">${task.place}</span><span class="time">${task.time}</span><button class="delete-btn">x</button>`;
+                document.getElementById(`${day}-section`).appendChild(newTask);
+            });
+            initializeDragAndDrop();
+        } else {
+            console.log('No such document!');
+        }
     } catch (error) {
-        console.error("Error fetching tasks from Firestore:", error);
+        console.error("Error fetching tasks from Firestore: ", error);
     }
 }
 
-// Initialize the drag-and-drop functionality
+// Save tasks to Firestore
+async function saveTaskToFirestore(day, taskId, taskData) {
+    try {
+        const docRef = doc(db, 'weeks', day);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            const tasks = docSnap.data().tasks || [];
+            const updatedTasks = tasks.filter(task => task.id !== taskId);
+            updatedTasks.push(taskData);
+            await updateDoc(docRef, { tasks: updatedTasks });
+        } else {
+            await setDoc(docRef, { tasks: [taskData] });
+        }
+    } catch (error) {
+        console.error("Error saving task to Firestore: ", error);
+    }
+}
+
+// Add Task function
+async function addTask() {
+    const taskName = taskNameInput.value.trim();
+    const taskPlace = taskPlaceInput.value.trim();
+    const taskTime = taskTimeInput.value;
+    const taskColor = taskColorInput.value;
+    if (taskName === '' || taskPlace === '' || taskTime === '') return;
+    const taskId = `task-${new Date().getTime()}`;
+    const day = 'monday'; // Change this dynamically based on where the task is added
+
+    const newTask = document.createElement('div');
+    newTask.classList.add('task');
+    newTask.setAttribute('draggable', 'true');
+    newTask.setAttribute('id', taskId);
+    newTask.style.backgroundColor = taskColor;
+    newTask.innerHTML = `${taskName} <span class="place">${taskPlace}</span><span class="time">${taskTime}</span><button class="delete-btn">x</button>`;
+    document.getElementById(`${day}-section`).appendChild(newTask);
+
+    const taskData = {
+        id: taskId,
+        name: taskName,
+        place: taskPlace,
+        time: taskTime,
+        color: taskColor
+    };
+    await saveTaskToFirestore(day, taskId, taskData);
+
+    closeModal();
+    taskNameInput.value = '';
+    taskPlaceInput.value = '';
+    taskTimeInput.value = '';
+    taskColorInput.value = '#456C86';
+    initializeDragAndDrop();
+}
+
+// Edit Task function
+async function editTask() {
+    const taskName = editTaskNameInput.value.trim();
+    const taskPlace = editTaskPlaceInput.value.trim();
+    const taskTime = editTaskTimeInput.value;
+    const taskColor = editTaskColorInput.value;
+    if (taskName === '' || taskPlace === '' || taskTime === '') return;
+    
+    const day = 'monday'; // Change this dynamically based on where the task is edited
+    const task = document.getElementById(currentTaskId);
+    task.style.backgroundColor = taskColor;
+    task.innerHTML = `${taskName} <span class="place">${taskPlace}</span><span class="time">${taskTime}</span><button class="delete-btn">x</button>`;
+
+    const taskData = {
+        id: currentTaskId,
+        name: taskName,
+        place: taskPlace,
+        time: taskTime,
+        color: taskColor
+    };
+    await saveTaskToFirestore(day, currentTaskId, taskData);
+
+    closeEditModal();
+}
+
+// Delete Task function
+async function deleteTask(e) {
+    const task = e.target.parentElement;
+    const day = 'monday'; // Change this dynamically based on where the task is deleted
+    const taskId = task.id;
+    const docRef = doc(db, 'weeks', day);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+        const tasks = docSnap.data().tasks || [];
+        const updatedTasks = tasks.filter(t => t.id !== taskId);
+        await updateDoc(docRef, { tasks: updatedTasks });
+    }
+
+    task.remove();
+}
+
 function initializeDragAndDrop() {
     const tasks = document.querySelectorAll('.task');
     tasks.forEach(task => {
@@ -53,7 +191,6 @@ function initializeDragAndDrop() {
         task.addEventListener('dragend', dragEnd);
         task.addEventListener('dblclick', openEditModal);
     });
-    const days = document.querySelectorAll('.day');
     days.forEach(day => {
         day.addEventListener('dragover', dragOver);
         day.addEventListener('dragenter', dragEnter);
@@ -66,9 +203,9 @@ function initializeDragAndDrop() {
     });
 }
 
-// Drag-and-drop event handlers
 function dragStart(e) {
     e.dataTransfer.setData('text/plain', e.target.id);
+    e.dataTransfer.effectAllowed = 'move';
     setTimeout(() => {
         e.target.classList.add('hide');
     }, 0);
@@ -96,33 +233,25 @@ function drop(e) {
     e.target.classList.remove('hovered');
     const id = e.dataTransfer.getData('text/plain');
     const draggable = document.getElementById(id);
+
     if (draggable.parentElement === e.target) {
         return;
     }
-    if (draggable.parentElement === tasksContainer) {
-        const clone = draggable.cloneNode(true);
-        clone.id = `task-${new Date().getTime()}`;
-        initializeTask(clone);
-        e.target.appendChild(clone);
-        saveTaskToFirestore(clone.id, {
-            name: clone.childNodes[0].nodeValue.trim(),
-            place: clone.querySelector('.place').textContent,
-            time: clone.querySelector('.time').textContent,
-            color: clone.style.backgroundColor
-        });
-    } else {
-        draggable.parentElement.removeChild(draggable);
+
+    if (e.target.classList.contains('day')) {
         e.target.appendChild(draggable);
-        saveTaskToFirestore(draggable.id, {
-            name: draggable.childNodes[0].nodeValue.trim(),
+        const day = e.target.id.split('-')[0]; // Assuming the day is part of the section ID (e.g., "monday-section")
+        const taskData = {
+            id: draggable.id,
+            name: draggable.querySelector('.name').textContent,
             place: draggable.querySelector('.place').textContent,
             time: draggable.querySelector('.time').textContent,
             color: draggable.style.backgroundColor
-        });
+        };
+        saveTaskToFirestore(day, draggable.id, taskData);
     }
 }
 
-// Modal functions
 function openModal() {
     modal.style.display = 'block';
 }
@@ -132,9 +261,9 @@ function closeModal() {
 }
 
 function openEditModal(e) {
-    currentTaskId = e.target.id;
-    const task = document.getElementById(currentTaskId);
-    editTaskNameInput.value = task.childNodes[0].nodeValue.trim();
+    const task = e.target.closest('.task');
+    currentTaskId = task.id;
+    editTaskNameInput.value = task.querySelector('.name').textContent;
     editTaskPlaceInput.value = task.querySelector('.place').textContent;
     editTaskTimeInput.value = task.querySelector('.time').textContent;
     editTaskColorInput.value = rgbToHex(task.style.backgroundColor);
@@ -145,138 +274,20 @@ function closeEditModal() {
     editModal.style.display = 'none';
 }
 
-// Function to add a task
-function addTask() {
-    const taskName = taskNameInput.value.trim();
-    const taskPlace = taskPlaceInput.value.trim();
-    const taskTime = taskTimeInput.value;
-    const taskColor = taskColorInput.value;
-    if (taskName === '' || taskPlace === '' || taskTime === '') return;
-    const taskId = `task-${new Date().getTime()}`;
-    const newTask = createTaskElement(taskId, {
-        name: taskName,
-        place: taskPlace,
-        time: taskTime,
-        color: taskColor
-    });
-    tasksContainer.appendChild(newTask);
-    closeModal();
-    saveTaskToFirestore(taskId, {
-        name: taskName,
-        place: taskPlace,
-        time: taskTime,
-        color: taskColor
-    });
-    taskNameInput.value = '';
-    taskPlaceInput.value = '';
-    taskTimeInput.value = '';
-    taskColorInput.value = '#456C86';
-    initializeDragAndDrop();
-}
-
-// Function to edit a task
-function editTask() {
-    const taskName = editTaskNameInput.value.trim();
-    const taskPlace = editTaskPlaceInput.value.trim();
-    const taskTime = editTaskTimeInput.value;
-    const taskColor = editTaskColorInput.value;
-    if (taskName === '' || taskPlace === '' || taskTime === '') return;
-    const task = document.getElementById(currentTaskId);
-    task.style.backgroundColor = taskColor;
-    task.innerHTML = `${taskName} <span class="place">${taskPlace}</span><span class="time">${taskTime}</span><button class="delete-btn">x</button>`;
-    saveTaskToFirestore(task.id, {
-        name: taskName,
-        place: taskPlace,
-        time: taskTime,
-        color: taskColor
-    });
-    initializeTask(task);
-    closeEditModal();
-}
-
-// Function to delete a task
-async function deleteTask(e) {
-    const task = e.target.parentElement;
-    try {
-        await deleteDoc(doc(db, 'tasks', task.id));
-        console.log("Task deleted from Firestore.");
-    } catch (error) {
-        console.error("Error deleting task from Firestore:", error);
-    }
-    task.remove();
-}
-
-// Function to create a task element
-function createTaskElement(taskId, taskData) {
-    const newTask = document.createElement('div');
-    newTask.classList.add('task');
-    newTask.setAttribute('draggable', 'true');
-    newTask.setAttribute('id', taskId);
-    newTask.style.backgroundColor = taskData.color;
-    newTask.innerHTML = `${taskData.name} <span class="place">${taskData.place}</span><span class="time">${taskData.time}</span><button class="delete-btn">x</button>`;
-    return newTask;
-}
-
-// Convert RGB to Hex
 function rgbToHex(rgb) {
     const rgbArray = rgb.match(/\d+/g);
-    return `#${((1 << 24) + (parseInt(rgbArray[0]) << 16) + (parseInt(rgbArray[1]) << 8) + parseInt(rgbArray[2])).toString(16).slice(1).toUpperCase()}`;
+    return `#${rgbArray.map(x => parseInt(x).toString(16).padStart(2, '0')).join('')}`;
 }
 
-// Event listeners
+// Event Listeners
 openModalBtn.addEventListener('click', openModal);
 closeBtn.addEventListener('click', closeModal);
 addTaskModalBtn.addEventListener('click', addTask);
 editCloseBtn.addEventListener('click', closeEditModal);
 editTaskModalBtn.addEventListener('click', editTask);
-window.addEventListener('click', (e) => {
-    if (e.target === modal) {
-        closeModal();
-    } else if (e.target === editModal) {
-        closeEditModal();
-    }
-});
-toggleSidebarBtn.addEventListener('click', () => {
-    document.body.classList.toggle('sidebar-active');
-});
 
-// Clear tasks when the button is clicked
-document.getElementById('toggle-sidebar-btnnn').addEventListener('click', function() {
-    const daySections = document.querySelectorAll('.day');
-    daySections.forEach(function(section) {
-        section.innerHTML = '<h3>' + section.querySelector('h3').textContent + '</h3>';
-    });
-});
-
-// Dark mode toggle
-document.addEventListener('DOMContentLoaded', function() {
-    const body = document.body;
-    const toggleBtn = document.getElementById('toggle-sidebar-btnn');
-    let isDarkMode = false;
-    toggleBtn.addEventListener('click', function() {
-        isDarkMode = !isDarkMode;
-        if (isDarkMode) {
-            body.classList.add('dark-mode');
-            toggleBtn.style.color = '#fff';
-        } else {
-            body.classList.remove('dark-mode');
-            toggleBtn.style.color = '#000';
-        }
-    });
-});
-
-// Print schedule
-const printScheduleBtn = document.getElementById('print-schedule-btn');
-printScheduleBtn.addEventListener('click', () => {
-    tasksContainer.style.display = 'none';
-    modal.style.display = 'none';
-    editModal.style.display = 'none';
-    window.print();
-    tasksContainer.style.display = '';
-    modal.style.display = '';
-    editModal.style.display = '';
-});
-
-// Initialize drag-and-drop and fetch tasks from Firestore on page load
 initializeDragAndDrop();
-fetchTasksFromFirestore();
+
+
+
+
