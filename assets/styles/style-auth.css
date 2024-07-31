@@ -69,6 +69,19 @@ form button {
     max-width: 300px;
     margin-top: 20px;
 }
+/* CSS for the success popup */
+.popup {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #28a745; /* Green background */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 14px;
+    z-index: 1001; /* Ensure it's above other content */
+}
 
 .error-message {
     color: red;
